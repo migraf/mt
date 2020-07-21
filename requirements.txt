@@ -1,0 +1,13 @@
+pandas
+plotly
+numpy
+catboost
+scipy
+sklearn
+notebook
+xlrd
+shap
+scikit-posthocs
+openpyxl
+ipywidgets
+seaborn

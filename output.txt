@@ -1,0 +1,733 @@
+VII.1A vs VII.1B
+Test: Spearman Correlation 
+Spearman Rho: 0.8617975612074316, p-Value: 2.9927999153339284e-39 
+
+VII.1A vs VII.1C
+Test: Spearman Correlation 
+Spearman Rho: 0.7069933545533618, p-Value: 7.760713586793613e-21 
+
+VII.1A vs VII.2A
+Test: Spearman Correlation 
+Spearman Rho: 0.3528418491761737, p-Value: 4.109909220010297e-05 
+
+VII.1A vs VII.2B
+Test: Spearman Correlation 
+Spearman Rho: 0.2685619157375703, p-Value: 0.002088656317459179 
+
+VII.1A vs VII.2C
+Test: Spearman Correlation 
+Spearman Rho: 0.28499362619744617, p-Value: 0.0010620122982807597 
+
+VII.1A vs Geschlecht
+	Test: Kruskal-Wallis
+	H-Value: 0.007930451384254644, p-Value: 0.9290397244524612
+
+VII.1A vs III.6
+	Test: Kruskal-Wallis
+	H-Value: 13.378828063765463, p-Value: 0.0038850396714162575
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  0.202970  0.250681         1.000000
+Sehr             0.202970 -1.000000  0.001972         1.000000
+Wenig            0.250681  0.001972 -1.000000         0.385225
+‹berhaupt nicht  1.000000  1.000000  0.385225        -1.000000
+
+VII.1A vs III.7
+	Test: Kruskal-Wallis
+	H-Value: 2.8606884907681938, p-Value: 0.41360670319022497
+
+VII.1A vs III.8
+	Test: Kruskal-Wallis
+	H-Value: 8.124016772491942, p-Value: 0.04351699331606912
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  1.000000  1.000000         0.540161
+Sehr             1.000000 -1.000000  0.772625         0.038062
+Wenig            1.000000  0.772625 -1.000000         1.000000
+‹berhaupt nicht  0.540161  0.038062  1.000000        -1.000000
+
+VII.1A vs III.10
+	Test: Kruskal-Wallis
+	H-Value: 3.677999856924045, p-Value: 0.2983992616796254
+
+VII.1A vs III.11
+	Test: Kruskal-Wallis
+	H-Value: 6.349057732000164, p-Value: 0.09580919446797496
+
+VII.1A vs III.12
+	Test: Kruskal-Wallis
+	H-Value: 0.7974034504191354, p-Value: 0.8500879925365775
+
+VII.1A vs IX.1A
+	Test: Kruskal-Wallis
+	H-Value: 2.8578240733721465, p-Value: 0.942960374502745
+
+VII.1A vs IX.2A
+	Test: Kruskal-Wallis
+	H-Value: 14.196621399255482, p-Value: 0.43516771222000905
+
+VII.1A vs IX.1B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1A vs IX.2B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1A vs IX.1C
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1A vs IX.2C
+	Test: Kruskal-Wallis
+	H-Value: 7.515590701145381, p-Value: 0.6760366628491599
+
+VII.1B vs VII.1C
+Test: Spearman Correlation 
+Spearman Rho: 0.7687112583449845, p-Value: 2.0471297169329686e-26 
+
+VII.1B vs VII.2A
+Test: Spearman Correlation 
+Spearman Rho: 0.14885301470126044, p-Value: 0.09226238864262239 
+
+VII.1B vs VII.2B
+Test: Spearman Correlation 
+Spearman Rho: 0.09700127071570651, p-Value: 0.27413908834441547 
+
+VII.1B vs VII.2C
+Test: Spearman Correlation 
+Spearman Rho: 0.09684994468543495, p-Value: 0.27489191430913934 
+
+VII.1B vs Geschlecht
+	Test: Kruskal-Wallis
+	H-Value: 0.000979004959419238, p-Value: 0.9750390190235376
+
+VII.1B vs III.6
+	Test: Kruskal-Wallis
+	H-Value: 9.925656917504014, p-Value: 0.019208765434004762
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  0.183049  0.911565              1.0
+Sehr             0.183049 -1.000000  0.012449              1.0
+Wenig            0.911565  0.012449 -1.000000              1.0
+‹berhaupt nicht  1.000000  1.000000  1.000000             -1.0
+
+VII.1B vs III.7
+	Test: Kruskal-Wallis
+	H-Value: 3.783985584285184, p-Value: 0.2857543791235015
+
+VII.1B vs III.8
+	Test: Kruskal-Wallis
+	H-Value: 11.142914406397056, p-Value: 0.0109776595046743
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  0.427996  1.000000         0.433119
+Sehr             0.427996 -1.000000  0.259793         0.006707
+Wenig            1.000000  0.259793 -1.000000         1.000000
+‹berhaupt nicht  0.433119  0.006707  1.000000        -1.000000
+
+VII.1B vs III.10
+	Test: Kruskal-Wallis
+	H-Value: 2.7192907349699733, p-Value: 0.43695898420125745
+
+VII.1B vs III.11
+	Test: Kruskal-Wallis
+	H-Value: 5.436369521221448, p-Value: 0.14249434741039504
+
+VII.1B vs III.12
+	Test: Kruskal-Wallis
+	H-Value: 2.3944224981117044, p-Value: 0.49467371742548827
+
+VII.1B vs IX.1A
+	Test: Kruskal-Wallis
+	H-Value: 4.568306196582252, p-Value: 0.8025610233388811
+
+VII.1B vs IX.2A
+	Test: Kruskal-Wallis
+	H-Value: 17.680104033257035, p-Value: 0.2217411161939629
+
+VII.1B vs IX.1B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1B vs IX.2B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1B vs IX.1C
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1B vs IX.2C
+	Test: Kruskal-Wallis
+	H-Value: 8.914869961379193, p-Value: 0.5402013906663771
+
+VII.1C vs VII.2A
+Test: Spearman Correlation 
+Spearman Rho: 0.18872531975339515, p-Value: 0.03219904003147092 
+
+VII.1C vs VII.2B
+Test: Spearman Correlation 
+Spearman Rho: 0.1290437111377105, p-Value: 0.1449810861273715 
+
+VII.1C vs VII.2C
+Test: Spearman Correlation 
+Spearman Rho: 0.12314154156731631, p-Value: 0.1644368203398015 
+
+VII.1C vs Geschlecht
+	Test: Kruskal-Wallis
+	H-Value: 0.6346264029382611, p-Value: 0.42566337973775425
+
+VII.1C vs III.6
+	Test: Kruskal-Wallis
+	H-Value: 17.493243170844156, p-Value: 0.0005594312167539935
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  0.011383  0.844716          1.00000
+Sehr             0.011383 -1.000000  0.000597          0.15001
+Wenig            0.844716  0.000597 -1.000000          1.00000
+‹berhaupt nicht  1.000000  0.150010  1.000000         -1.00000
+
+VII.1C vs III.7
+	Test: Kruskal-Wallis
+	H-Value: 3.6175936040674017, p-Value: 0.3058278193170321
+
+VII.1C vs III.8
+	Test: Kruskal-Wallis
+	H-Value: 26.092010366997865, p-Value: 9.123564977429998e-06
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  1.000000  0.684683         0.000127
+Sehr             1.000000 -1.000000  0.248010         0.000228
+Wenig            0.684683  0.248010 -1.000000         0.169626
+‹berhaupt nicht  0.000127  0.000228  0.169626        -1.000000
+
+VII.1C vs III.10
+	Test: Kruskal-Wallis
+	H-Value: 2.278666274531465, p-Value: 0.5166201980633585
+
+VII.1C vs III.11
+	Test: Kruskal-Wallis
+	H-Value: 12.699822669864085, p-Value: 0.005332842098549022
+	Significance found 
+	Post-Hoc Tests: Dunns with Bonferonni Correction
+                    M‰ﬂig      Sehr     Wenig  ‹berhaupt nicht
+M‰ﬂig           -1.000000  0.010117  1.000000         1.000000
+Sehr             0.010117 -1.000000  0.312113         0.014855
+Wenig            1.000000  0.312113 -1.000000         1.000000
+‹berhaupt nicht  1.000000  0.014855  1.000000        -1.000000
+
+VII.1C vs III.12
+	Test: Kruskal-Wallis
+	H-Value: 3.509720980039506, p-Value: 0.3195035291489136
+
+VII.1C vs IX.1A
+	Test: Kruskal-Wallis
+	H-Value: 5.9118731246379586, p-Value: 0.6571028683690742
+
+VII.1C vs IX.2A
+	Test: Kruskal-Wallis
+	H-Value: 10.522764764170747, p-Value: 0.7230523714562404
+
+VII.1C vs IX.1B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1C vs IX.2B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1C vs IX.1C
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.1C vs IX.2C
+	Test: Kruskal-Wallis
+	H-Value: 5.952873887412806, p-Value: 0.8192069059399236
+
+VII.2A vs VII.2B
+Test: Spearman Correlation 
+Spearman Rho: 0.9379378889958125, p-Value: 2.9316787824194274e-60 
+
+VII.2A vs VII.2C
+Test: Spearman Correlation 
+Spearman Rho: 0.8536324206892084, p-Value: 8.748183231639955e-38 
+
+VII.2A vs Geschlecht
+	Test: Kruskal-Wallis
+	H-Value: 2.0099129427991183, p-Value: 0.15627428545096161
+
+VII.2A vs III.6
+	Test: Kruskal-Wallis
+	H-Value: 2.760702194028955, p-Value: 0.43000995736767056
+
+VII.2A vs III.7
+	Test: Kruskal-Wallis
+	H-Value: 3.0028849583517787, p-Value: 0.3911805862800577
+
+VII.2A vs III.8
+	Test: Kruskal-Wallis
+	H-Value: 4.081216489012862, p-Value: 0.25282671151227054
+
+VII.2A vs III.10
+	Test: Kruskal-Wallis
+	H-Value: 2.6663375662313173, p-Value: 0.4459782162494308
+
+VII.2A vs III.11
+	Test: Kruskal-Wallis
+	H-Value: 2.3533740531028338, p-Value: 0.5023730346772861
+
+VII.2A vs III.12
+	Test: Kruskal-Wallis
+	H-Value: 0.8441711732676223, p-Value: 0.8388752719864857
+
+VII.2A vs IX.1A
+	Test: Kruskal-Wallis
+	H-Value: 5.960792950734084, p-Value: 0.6516238038027081
+
+VII.2A vs IX.2A
+	Test: Kruskal-Wallis
+	H-Value: 22.01763466555455, p-Value: 0.07825275307908007
+
+VII.2A vs IX.1B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2A vs IX.2B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2A vs IX.1C
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2A vs IX.2C
+	Test: Kruskal-Wallis
+	H-Value: 6.796089171450237, p-Value: 0.7445449486000226
+
+VII.2B vs VII.2C
+Test: Spearman Correlation 
+Spearman Rho: 0.8872617885870955, p-Value: 1.6675735420770307e-44 
+
+VII.2B vs Geschlecht
+	Test: Kruskal-Wallis
+	H-Value: 1.2258959788238943, p-Value: 0.2682066596517914
+
+VII.2B vs III.6
+	Test: Kruskal-Wallis
+	H-Value: 1.0577750088550377, p-Value: 0.7872758753262437
+
+VII.2B vs III.7
+	Test: Kruskal-Wallis
+	H-Value: 5.222956970099966, p-Value: 0.15618044676995782
+
+VII.2B vs III.8
+	Test: Kruskal-Wallis
+	H-Value: 3.250308778327685, p-Value: 0.35461883307129094
+
+VII.2B vs III.10
+	Test: Kruskal-Wallis
+	H-Value: 3.970358979347955, p-Value: 0.2646826643975451
+
+VII.2B vs III.11
+	Test: Kruskal-Wallis
+	H-Value: 1.6019996326899435, p-Value: 0.658936501433951
+
+VII.2B vs III.12
+	Test: Kruskal-Wallis
+	H-Value: 1.2283584577851476, p-Value: 0.7462111244643571
+
+VII.2B vs IX.1A
+	Test: Kruskal-Wallis
+	H-Value: 5.96647852274461, p-Value: 0.6509869361934034
+
+VII.2B vs IX.2A
+	Test: Kruskal-Wallis
+	H-Value: 19.313729048047296, p-Value: 0.15330445657201242
+
+VII.2B vs IX.1B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2B vs IX.2B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2B vs IX.1C
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2B vs IX.2C
+	Test: Kruskal-Wallis
+	H-Value: 8.514624433164013, p-Value: 0.5787007332546692
+
+VII.2C vs Geschlecht
+	Test: Kruskal-Wallis
+	H-Value: 3.5155878780389807, p-Value: 0.06079408540352988
+
+VII.2C vs III.6
+	Test: Kruskal-Wallis
+	H-Value: 1.3416255834002482, p-Value: 0.7192731957076379
+
+VII.2C vs III.7
+	Test: Kruskal-Wallis
+	H-Value: 2.302191596395333, p-Value: 0.5121011853112147
+
+VII.2C vs III.8
+	Test: Kruskal-Wallis
+	H-Value: 2.560939235965293, p-Value: 0.4643785888844302
+
+VII.2C vs III.10
+	Test: Kruskal-Wallis
+	H-Value: 2.4040006978739803, p-Value: 0.4928903285620445
+
+VII.2C vs III.11
+	Test: Kruskal-Wallis
+	H-Value: 0.7402916913895031, p-Value: 0.8636884648563783
+
+VII.2C vs III.12
+	Test: Kruskal-Wallis
+	H-Value: 3.7777786677446965, p-Value: 0.2864814462156389
+
+VII.2C vs IX.1A
+	Test: Kruskal-Wallis
+	H-Value: 6.02927965290239, p-Value: 0.6439519945588101
+
+VII.2C vs IX.2A
+	Test: Kruskal-Wallis
+	H-Value: 17.184810260798304, p-Value: 0.2464630337790441
+
+VII.2C vs IX.1B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2C vs IX.2B
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2C vs IX.1C
+	Test: Kruskal-Wallis
+	H-Value: nan, p-Value: nan
+
+VII.2C vs IX.2C
+	Test: Kruskal-Wallis
+	H-Value: 6.90664019181547, p-Value: 0.7342283235875505
+
+Geschlecht vs III.6
+	Test: Chi2 Goodness of Fit:
+	Chi2: 3.8808809749933535, p-Value: 0.27461744661312987, DoF: 3
+
+Geschlecht vs III.7
+	Test: Chi2 Goodness of Fit:
+	Chi2: 3.7737898515027255, p-Value: 0.2869495655465382, DoF: 3
+
+Geschlecht vs III.8
+	Test: Chi2 Goodness of Fit:
+	Chi2: 0.10973468831425352, p-Value: 0.99064416712782, DoF: 3
+
+Geschlecht vs III.10
+	Test: Chi2 Goodness of Fit:
+	Chi2: 6.3545856203189475, p-Value: 0.09557711430866074, DoF: 3
+
+Geschlecht vs III.11
+	Test: Chi2 Goodness of Fit:
+	Chi2: 6.494540543168931, p-Value: 0.08987806030062036, DoF: 3
+
+Geschlecht vs III.12
+	Test: Chi2 Goodness of Fit:
+	Chi2: 4.358434401419476, p-Value: 0.22527056816969046, DoF: 3
+
+Geschlecht vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 8.49682688485945, p-Value: 0.3865011774266221, DoF: 8
+
+Geschlecht vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 13.68605250958192, p-Value: 0.4733527124315309, DoF: 14
+
+Geschlecht vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 16.655648786612154, p-Value: 0.3398629169255761, DoF: 15
+
+Geschlecht vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 20.930867015930357, p-Value: 0.5250141788912945, DoF: 22
+
+Geschlecht vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 5.488530241355208, p-Value: 0.7043104139323697, DoF: 8
+
+Geschlecht vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 12.681407039334783, p-Value: 0.24203413773136426, DoF: 10
+
+III.6 vs III.7
+	Test: Chi2 Goodness of Fit:
+	Chi2: 33.38449876851459, p-Value: 0.00011445148089983774, DoF: 9
+
+III.6 vs III.8
+	Test: Chi2 Goodness of Fit:
+	Chi2: 147.7659886009513, p-Value: 2.558959938462466e-27, DoF: 9
+
+III.6 vs III.10
+	Test: Chi2 Goodness of Fit:
+	Chi2: 15.348965647917588, p-Value: 0.0817857603348553, DoF: 9
+
+III.6 vs III.11
+	Test: Chi2 Goodness of Fit:
+	Chi2: 51.659507404406625, p-Value: 5.242349745945492e-08, DoF: 9
+
+III.6 vs III.12
+	Test: Chi2 Goodness of Fit:
+	Chi2: 16.75301477784269, p-Value: 0.052727179403213524, DoF: 9
+
+III.6 vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 29.52567724856126, p-Value: 0.20097275770396422, DoF: 24
+
+III.6 vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 42.68480665315772, p-Value: 0.3156977334810117, DoF: 39
+
+III.6 vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 42.42614879199519, p-Value: 0.5815945418067963, DoF: 45
+
+III.6 vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 74.0779044191676, p-Value: 0.23153703737400688, DoF: 66
+
+III.6 vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 27.290855716452015, p-Value: 0.16143201272001206, DoF: 21
+
+III.6 vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 30.94641312358277, p-Value: 0.41804501746743394, DoF: 30
+
+III.7 vs III.8
+	Test: Chi2 Goodness of Fit:
+	Chi2: 31.045337090656027, p-Value: 0.0002907769201855959, DoF: 9
+
+III.7 vs III.10
+	Test: Chi2 Goodness of Fit:
+	Chi2: 35.15282841475113, p-Value: 5.599577972177432e-05, DoF: 9
+
+III.7 vs III.11
+	Test: Chi2 Goodness of Fit:
+	Chi2: 12.456952894966875, p-Value: 0.1887565810949771, DoF: 9
+
+III.7 vs III.12
+	Test: Chi2 Goodness of Fit:
+	Chi2: 6.783774019957852, p-Value: 0.6596200860546293, DoF: 9
+
+III.7 vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 19.827856195332252, p-Value: 0.706522318208088, DoF: 24
+
+III.7 vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 24.019266965016964, p-Value: 0.9714324097501288, DoF: 39
+
+III.7 vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 39.99376753332294, p-Value: 0.6835436912243994, DoF: 45
+
+III.7 vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 64.56988447449984, p-Value: 0.5267941089224752, DoF: 66
+
+III.7 vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 12.42539923431644, p-Value: 0.9274153959836113, DoF: 21
+
+III.7 vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 25.95011487159666, p-Value: 0.677675379483913, DoF: 30
+
+III.8 vs III.10
+	Test: Chi2 Goodness of Fit:
+	Chi2: 17.406600586850086, p-Value: 0.0427165678105461, DoF: 9
+
+III.8 vs III.11
+	Test: Chi2 Goodness of Fit:
+	Chi2: 18.08247874688012, p-Value: 0.03422860876262083, DoF: 9
+
+III.8 vs III.12
+	Test: Chi2 Goodness of Fit:
+	Chi2: 20.065833651825262, p-Value: 0.017510439410883948, DoF: 9
+
+III.8 vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 24.72122330464053, p-Value: 0.4210341371568495, DoF: 24
+
+III.8 vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 30.789427780944237, p-Value: 0.8231217703310773, DoF: 39
+
+III.8 vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 52.04700479265321, p-Value: 0.2186629457410419, DoF: 45
+
+III.8 vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 61.56767678436851, p-Value: 0.6317066895186679, DoF: 66
+
+III.8 vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 16.721652531399677, p-Value: 0.7278348742115759, DoF: 21
+
+III.8 vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 31.545729233549253, p-Value: 0.38894724801100866, DoF: 30
+
+III.10 vs III.11
+	Test: Chi2 Goodness of Fit:
+	Chi2: 7.008408306675333, p-Value: 0.6362439369082526, DoF: 9
+
+III.10 vs III.12
+	Test: Chi2 Goodness of Fit:
+	Chi2: 7.6317318672141905, p-Value: 0.5716415394590681, DoF: 9
+
+III.10 vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 20.184678410684608, p-Value: 0.6862268247504424, DoF: 24
+
+III.10 vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 39.20219578740587, p-Value: 0.46080797605295837, DoF: 39
+
+III.10 vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 32.84949567918608, p-Value: 0.9109197335881221, DoF: 45
+
+III.10 vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 83.01070495447853, p-Value: 0.07685353165319829, DoF: 66
+
+III.10 vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 23.575822869940517, p-Value: 0.31406144901940636, DoF: 21
+
+III.10 vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 30.37262923762695, p-Value: 0.4466932119611318, DoF: 30
+
+III.11 vs III.12
+	Test: Chi2 Goodness of Fit:
+	Chi2: 28.4262324408546, p-Value: 0.0008093246740518938, DoF: 9
+
+III.11 vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 22.857251277383124, p-Value: 0.5282376469787935, DoF: 24
+
+III.11 vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 30.036296023000567, p-Value: 0.848029320228605, DoF: 39
+
+III.11 vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 45.094019129769634, p-Value: 0.46802404011887033, DoF: 45
+
+III.11 vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 57.870661268556, p-Value: 0.7518169072927764, DoF: 66
+
+III.11 vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 26.799010461966855, p-Value: 0.17760537964785536, DoF: 21
+
+III.11 vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 39.14708948060241, p-Value: 0.12246750255730694, DoF: 30
+
+III.12 vs IX.1A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 14.04084851520749, p-Value: 0.9457223989531827, DoF: 24
+
+III.12 vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 32.24345029685205, p-Value: 0.7696121399513824, DoF: 39
+
+III.12 vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 43.60902215839715, p-Value: 0.5309396936585412, DoF: 45
+
+III.12 vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 71.32786452394724, p-Value: 0.3052018452868949, DoF: 66
+
+III.12 vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 22.610074979626262, p-Value: 0.3651152474090889, DoF: 21
+
+III.12 vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 22.696674987199177, p-Value: 0.8275212046605249, DoF: 30
+
+IX.1A vs IX.2A
+	Test: Chi2 Goodness of Fit:
+	Chi2: 191.66933839498597, p-Value: 4.142919705290473e-06, DoF: 112
+
+IX.1A vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 201.13668447293446, p-Value: 4.9819666970866e-06, DoF: 120
+
+IX.1A vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 175.8039437098528, p-Value: 0.4899905119751861, DoF: 176
+
+IX.1A vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 128.5026449991345, p-Value: 3.166128959946811e-06, DoF: 64
+
+IX.1A vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 97.09494805076912, p-Value: 0.09383037460584888, DoF: 80
+
+IX.2A vs IX.1B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 266.9060807897363, p-Value: 0.004781827243150028, DoF: 210
+
+IX.2A vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 389.34289458207525, p-Value: 0.0011334483070262926, DoF: 308
+
+IX.2A vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 194.18876212710578, p-Value: 2.373134926629253e-06, DoF: 112
+
+IX.2A vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 169.60114627303912, p-Value: 0.001954838392409067, DoF: 120
+
+IX.1B vs IX.2B
+	Test: Chi2 Goodness of Fit:
+	Chi2: 348.95435064935066, p-Value: 0.05383702058087003, DoF: 308
+
+IX.1B vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 236.0228062374411, p-Value: 1.39288749585077e-09, DoF: 120
+
+IX.1B vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 367.34368782522193, p-Value: 2.6323053507100816e-22, DoF: 140
+
+IX.2B vs IX.1C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 346.4160861745909, p-Value: 7.58499410895307e-17, DoF: 154
+
+IX.2B vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 256.25282235651554, p-Value: 0.00016263093307314404, DoF: 180
+
+IX.1C vs IX.2C
+	Test: Chi2 Goodness of Fit:
+	Chi2: 82.52395673910826, p-Value: 0.028525432286084614, DoF: 60
+
