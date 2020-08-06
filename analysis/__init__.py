@@ -5,3 +5,6 @@ from analysis.analysis.util import *
 from analysis.analysis.plots import *
 from analysis.analysis.plots import scatter_correlation_plot
 from analysis.analysis.process_data import load_data
+from analysis.analysis.regression import *
+from analysis.analysis.svm import *
+from analysis.analysis.random_forest import *

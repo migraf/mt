@@ -1,12 +1,39 @@
 import pandas as pd
 import numpy as np
-from numpy.distutils.system_info import dfftw_info
 
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import label_binarize
 import plotly.graph_objects as go
 from analysis import *
+
+
+def random_forest(data=None, num_cols=None, cat_cols=None, target=None, cv=True, display=True):
+
+    model_subtype = detect_prediction_type(data, target)
+
+    # Create fitting predictor
+    x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target)
+    if model_subtype in ["binary", "multi-class"]:
+        pred = RandomForestClassifier(random_state=0)
+        # TODO check if this is really necessary
+        y_train = y_train.astype("str")
+        y_test = y_test.astype("str")
+    else:
+        pred = RandomForestRegressor(random_state=0)
+        y_train = y_train.astype("float")
+        y_test = y_test.astype("float")
+    if cv:
+        # TODO change to use cross validation
+        pred.fit(x_train, y_train)
+    else:
+        pred.fit(x_train, y_train)
+
+    print(pred.score(x_test, y_test))
+    if display:
+        pass
+
+    return pred
 
 
 def random_forest_classifier(data=None, num_cols=None, cat_cols=None, target=None, train_data=None, train_labels=None):
@@ -31,7 +58,7 @@ def random_forest_classifier(data=None, num_cols=None, cat_cols=None, target=Non
         return clf
     else:
 
-        x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target, na_strategy="fill")
+        x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target)
         y_train = y_train.astype("str")
         y_test = y_test.astype("str")
         print(x_train)
@@ -58,11 +85,9 @@ def random_forest_regressor(data=None, num_cols=None, cat_cols=None, target=None
         clf.fit(train_data, train_labels)
         return clf
     else:
-        x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target, na_strategy="fill")
+        x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target)
         y_train = y_train.astype(float)
         y_test = y_test.astype(float)
-        # print(x_train)
-        # print(list(y_train))
         clf = RandomForestRegressor(random_state=0)
         clf.fit(x_train, y_train)
         y_pred = clf.predict(x_test)
@@ -124,12 +149,11 @@ if __name__ == '__main__':
     excluded_categorical_columns = ['Patienten-ID', 'Eingabedatum', 'III.2Wann wurde der Abstrich durchgeführt(Datum)?',
                                     'III.4b: wenn ja, seit wann(Datum)?']
     # IGG Spike prediction dependencies to be removed
-    # excluded_numerical_columns = ["VII.1B: OD IgG Spike 1 Protein rekombinant",
-    #                               "VII.1A: OD IgG RBD Peptid rekombinant",
-    #                               "VII.1C: OD IgG Nucleocapsid Protein rekombinant",
-    #                               "VIII.1A: Bewertung IgG RBD Peptid rekombinant",
-    #                               "VIII.1C: Bewertung IgG Nucleocapsid Protein rekombinant"]
-    excluded_numerical_columns = ["HLA C04", "HLA C03", "HLA C07", "HLA C06", "HLA C02", "HLA C05", "HLA C01"]
+    excluded_numerical_columns = ["VII.1B: OD IgG Spike 1 Protein rekombinant",
+                                  "VII.1C: OD IgG Nucleocapsid Protein rekombinant",
+                                  "VIII.1A: Bewertung IgG RBD Peptid rekombinant",
+                                  "VIII.1C: Bewertung IgG Nucleocapsid Protein rekombinant"]
+    # excluded_numerical_columns = []
     num_columns, cat_columns = find_variables(df_sars,
                                               excluded_categorical_columns,
                                               excluded_numerical_columns,
@@ -137,9 +161,9 @@ if __name__ == '__main__':
                                               display=True
                                               )
     print("Random forest main")
-    print(cat_columns)
     target = "IX.1C HLA"
     regr_target = "VII.1A: OD IgG RBD Peptid rekombinant"
 
     # random_forest_classifier(df_sars, num_columns, cat_columns, target)
-    random_forest_regressor(df_sars, num_columns, cat_columns, regr_target)
+    # random_forest_regressor(df_sars, num_columns, cat_columns, regr_target)
+    pred = random_forest(df_sars, num_columns, cat_columns, regr_target)

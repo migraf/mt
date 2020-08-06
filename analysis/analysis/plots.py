@@ -3,8 +3,9 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from process_data import load_data
-from pandas_profiling import ProfileReport
+from analysis import *
+from .process_data import load_data
+
 
 def grouped_box_plot(data, cat_col, num_cols, title=None, y_title=None, x_title=None, points=True):
     """
@@ -111,10 +112,10 @@ def grouped_plot_matrix(data, num_cols, cat_col):
     :return:
     :rtype:
     """
-    # TODO column mappings
     selected_cols = num_cols.copy()
     selected_cols.append(cat_col)
     plot_data = data[selected_cols]
+    # TODO find a smarter way to shorten variable names
     new_cols = [col[:10] for col in plot_data.columns]
     plot_data.columns = new_cols
     sns.set(style="ticks")

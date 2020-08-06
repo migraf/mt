@@ -309,7 +309,7 @@ def extract_clusters(df, clusters, selected_clusters=None, save=True):
 
 
 if __name__ == '__main__':
-    df_sars = load_data("C:\\hypothesis\\repositories\\server\\walzLabBackend\\notebook\\15052020SARS-CoV-2_final.xlsx")
+    df_sars = load_data("walz_data.csv")
 
     excluded_categorical_columns = ['Patienten-ID', ]
     excluded_numerical_columns = []
@@ -320,7 +320,7 @@ if __name__ == '__main__':
                                               min_available=20,
                                               display=True
                                               )
-    cluster_df = create_cluster_data(df_sars, num_columns, cat_columns)
+    cluster_df = create_training_data(df_sars, num_columns, cat_columns, test_train_split=False)
     # k_means_cluster(cluster_df)
     # gmm_cluster(data=dummy_df)
     clusters = vbgmm_cluster(data=cluster_df, n_models=3)

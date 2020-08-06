@@ -1,9 +1,6 @@
-import pandas as pd
-import numpy as np
 from sklearn.svm import SVC, SVR
-from sklearn.model_selection import cross_val_score
-
-from analysis import load_data, find_variables, create_training_data
+from .util import create_training_data, find_variables
+from .process_data import load_data
 
 
 def svm_classifier(data=None, num_cols=None, cat_cols=None, target=None, train_data=None, train_labels=None):

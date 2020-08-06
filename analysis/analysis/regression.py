@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.linear_model import ElasticNet, ElasticNetCV, LinearRegression
+from sklearn.linear_model import ElasticNet, ElasticNetCV, LinearRegression, LogisticRegression
 from sklearn.preprocessing import normalize
 # from process_data import load_data
 # from util import *
@@ -8,10 +8,10 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
 # from analysis import create_training_data, find_variables
-from util import create_training_data, find_variables
+from .util import create_training_data, find_variables
 import shap
 
-from process_data import load_data
+from .process_data import load_data
 
 
 def linear_regression(data, num_cols, cat_cols, target):
@@ -29,7 +29,31 @@ def linear_regression(data, num_cols, cat_cols, target):
 
 
 def logistic_regression(data=None, num_cols=None, cat_cols=None, target=None, train_data=None, train_labels=None):
-    pass
+    """
+    Train a classifier using logistic regression
+    Parameters
+    ----------
+    data :
+    num_cols :
+    cat_cols :
+    target :
+    train_data :
+    train_labels :
+
+    Returns
+    -------
+
+    """
+    if train_data is not None and train_labels is not None:
+        clf = LogisticRegression(penalty="elasticnet")
+        clf.fit(train_data, train_labels)
+        return clf
+    else:
+        x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target)
+        clf = LogisticRegression(penalty="elasticnet")
+        clf.fit(x_train, y_train)
+        # TODO display results
+        return clf
 
 
 

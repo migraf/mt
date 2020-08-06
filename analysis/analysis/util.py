@@ -9,6 +9,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 # from analysis import *
 from sklearn.preprocessing import StandardScaler
+from pandas.api.types import is_numeric_dtype
+
+
+
+def plot_regression_results(predicted, true, metric):
+    pass
+
 
 
 def encode_categorical_variables(df, cat_cols):
@@ -63,7 +70,7 @@ def revert_to_categorical(df, cat_cols):
     pass
 
 
-def create_training_data(df, num_cols, cat_cols, target_col, test_train_split=True):
+def create_training_data(df, num_cols, cat_cols, target_col=None, test_train_split=True):
     """
     Split the given data frame into train/test/val split and process the data, to fit to the selected algorithm type
     :param na_strategy: how to handle nan values, in target column either drop or fill
@@ -78,18 +85,21 @@ def create_training_data(df, num_cols, cat_cols, target_col, test_train_split=Tr
     cat_cols_copy = cat_cols.copy()
     num_cols_copy = num_cols.copy()
     if target_col in cat_cols_copy:
-        cat_cols_copy.remove(target_col)
-        target = df[target_col].copy()
+        if target_col:
+            target = df[target_col].copy()
+            cat_cols_copy.remove(target_col)
     else:
-        num_cols_copy.remove(target_col)
-        target = df[target_col].copy()
-        target = target.astype(float)
+        print(f" Target Found {target_col in cat_cols_copy}")
+        if target_col:
+            num_cols_copy.remove(target_col)
+            target = df[target_col].copy()
+            target = target.astype(float)
 
     dummy_df = encode_categorical_variables(df, cat_cols_copy)
     # Standardize numerical variables
     num_df = df[num_cols_copy]
     cols = num_df.columns
-    num_df = fill_na_with_median(num_df)
+    # num_df = fill_na_with_median(num_df)
     scaler = StandardScaler()
 
     imp = SimpleImputer(missing_values=np.nan, strategy="median")
@@ -100,9 +110,9 @@ def create_training_data(df, num_cols, cat_cols, target_col, test_train_split=Tr
     data = pd.concat([num_df, dummy_df], axis=1)
     data = data.dropna(how="all")
     # TODO handle still existing nans better than this
-
-    data = data[target.notnull()]
-    target = target[target.notnull()]
+    if target_col:
+        data = data[target.notnull()]
+        target = target[target.notnull()]
     for col in data.columns:
         data[col] = data[col].astype("float")
     data = data.fillna(method="pad", axis="columns")
@@ -110,8 +120,35 @@ def create_training_data(df, num_cols, cat_cols, target_col, test_train_split=Tr
     if test_train_split:
         x_train, x_test, y_train, y_test = train_test_split(data, target)
         return x_train, x_test, y_train, y_test
+    elif not target_col:
+        return data
     else:
         return data, target
+
+
+def detect_prediction_type(data, target):
+    """
+    Examines the values in the target column and picks a model sub type appropriate for this
+    Parameters
+    ----------
+    data : pandas Dataframe containing the data
+    target : name of the target column
+
+    Returns
+    -------
+    String containing the model sub type
+
+    """
+    if is_numeric_dtype(data[target]):
+        if len(data[target].unique()) == 2:
+            return "binary"
+        else:
+            return "regression"
+    else:
+        if len(data[target].unique()) == 2:
+            return "binary"
+        else:
+            return "multi-class"
 
 
 def fill_na_with_median(df):
@@ -146,7 +183,7 @@ def reduce_dims(data, dims=3, reduction_algorithm="tsne"):
         return mapped_components, embedding
     # Dimensionality Reduction using t-SNE
     elif reduction_algorithm == "tsne":
-        # If the number is dimensions is higher than 50 perform an initial PCA
+        # If the number of dimensions is higher than 50 perform an initial PCA
         if data.shape[1] > 50:
             pca = PCA(n_components=50)
             mapped_components = pca.fit_transform(data)

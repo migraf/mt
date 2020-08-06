@@ -3,7 +3,7 @@ plotly
 numpy
 catboost
 scipy
-sklearn
+scikit-learn
 notebook
 xlrd
 shap
@@ -11,3 +11,5 @@ scikit-posthocs
 openpyxl
 ipywidgets
 seaborn
+umap-learn
+hdbscan

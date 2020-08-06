@@ -1,9 +1,11 @@
 """
-Base Classes for basic machine learning models
+Base Classes for machine learning models
 """
+
 import numpy as np
 from joblib import dump, load
 import pandas as pd
+
 
 
 class Model:
