@@ -86,10 +86,10 @@ def create_training_data(df, num_cols, cat_cols, target_col=None, test_train_spl
     num_cols_copy = num_cols.copy()
     if target_col in cat_cols_copy:
         if target_col:
+
             target = df[target_col].copy()
             cat_cols_copy.remove(target_col)
     else:
-        print(f" Target Found {target_col in cat_cols_copy}")
         if target_col:
             num_cols_copy.remove(target_col)
             target = df[target_col].copy()

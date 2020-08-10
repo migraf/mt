@@ -8,8 +8,7 @@ import plotly.graph_objects as go
 from analysis import *
 
 
-def random_forest(data=None, num_cols=None, cat_cols=None, target=None, cv=True, display=True):
-
+def random_forest(data=None, num_cols=None, cat_cols=None, target=None, cv=True, cv_params=None, display=True):
     model_subtype = detect_prediction_type(data, target)
 
     # Create fitting predictor
@@ -25,13 +24,25 @@ def random_forest(data=None, num_cols=None, cat_cols=None, target=None, cv=True,
         y_test = y_test.astype("float")
     if cv:
         # TODO change to use cross validation
-        pred.fit(x_train, y_train)
+        if not cv_params:
+            cv_params = {
+                "n_estimators": [10, 100, 1000],
+                "max_depth": [None, 4, 6, 8],
+                "max_features": [None, "auto", "log2"],
+                "min_samples_leaf": [1, 5, 10]
+            }
+        pred, cv_results, param_results = cross_validation_tuning(pred, cv_params, x_train, y_train)
+        print(param_results)
+
     else:
         pred.fit(x_train, y_train)
 
-    print(pred.score(x_test, y_test))
     if display:
-        pass
+        display_model_performance(pred, model_subtype, x_test, y_test, target)
+        display_feature_importances(pred, x_train, x_test, model_type="tree")
+    else:
+        print(f"Score: {pred.score(x_test, y_test)}")
+        # TODO print additional information
 
     return pred
 
@@ -166,4 +177,4 @@ if __name__ == '__main__':
 
     # random_forest_classifier(df_sars, num_columns, cat_columns, target)
     # random_forest_regressor(df_sars, num_columns, cat_columns, regr_target)
-    pred = random_forest(df_sars, num_columns, cat_columns, regr_target)
+    pred = random_forest(df_sars, num_columns, cat_columns, regr_target, cv=False)
