@@ -2,42 +2,35 @@ import pandas as pd
 import numpy as np
 
 
-def load_data(path, two_sheets=None):
+def load_data(path=None, conn=None, sql=None, na_values=[]):
     """
     Load a file into a pandas dataframe
     :param path: filepath pointing to a datafile, file must be xlsx or csv
-    :return : pandas dataframe based on the data, if walz style upload also return mapping dict
+    :param conn: SQLAlchemy connection to a datbase
+    :param sql: sql query string to return a table to be converted into a dataframe
+    :return : pandas dataframe containing the data
     """
     # load data into dataframe, depending on file path
-    file_type = path.split(".")[1]
-    if file_type == "csv":
-        dfs = pd.read_csv(path)
-    elif file_type == "xlsx":
-        dfs = pd.read_excel(path, sheet_name=None, )
-        dfs = dfs["15052020SARS-CoV-2_final"]
-        # TODO remove this
-        # specific code for loading the sheets provided by Walz Lab
-        if two_sheets:
-            data_df = dfs["Sheet1"]
-            data_dict = dfs["Sheet2"]
 
-            # Remove fully empty rows from the data
-            data_df = data_df.dropna(how="all")
-            data_dict = data_dict.dropna(how="all")
-            mapping_dict = {}
-            # TODO vectorize this
-            for col in data_dict.columns:
-                data_col = col.split(" ")[0].replace(":", "")
-                mapping_dict[data_col] = col
-            # TODO use dict get for mapping
-            mapping_dict = {col: mapping_dict.get(col, col) for col in data_df.columns}
-            return data_df, mapping_dict
-    dfs = dfs.dropna(how="all")
-    dfs = dfs.convert_dtypes()
-    # dfs.to_csv("walz_data.csv", index=False)
+    if path is not None:
+        file_type = path.split(".")[-1].lower()
+        if file_type == "csv":
+            df = pd.read_csv(path, na_values=na_values)
+        elif file_type in ["xlsx", "xls"]:
+            # Read the first sheet
+            df = pd.read_excel(path, sheet_name=[0], na_values=na_values)
+        elif file_type.lower() == "json":
+            df = pd.read_json(path, na_values=na_values)
+        elif file_type in ["sav", "zsav"]:
+            df = pd.read_spss(path, na_values=na_values)
+        df = df.dropna(how="all")
+        df = df.convert_dtypes()
+        # dfs.to_csv("walz_data.csv", index=False)
 
-    # TODO maybe convert all object columns to categorical based on number of unique values
-    return dfs
+    elif conn is not None and sql is not None:
+        df = pd.read_sql(sql, conn)
+
+    return df
 
 
 def create_data_table_df(df, mapping):

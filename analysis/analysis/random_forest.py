@@ -8,22 +8,46 @@ import plotly.graph_objects as go
 from analysis import *
 
 
-def random_forest(data=None, num_cols=None, cat_cols=None, target=None, cv=True, cv_params=None, display=True):
-    model_subtype = detect_prediction_type(data, target)
+def random_forest(data, target, excluded_variables=[], prediction_type=None, n_estimators=100, criterion=None,
+                  max_depth=None, max_features=None, min_samples_leaf=1, cv=True, cv_params=None, display=True,
+                  shap=True, prepare_data=True):
+    if prediction_type:
+        model_subtype = prediction_type
+    else:
+        model_subtype = detect_prediction_type(data, target)
 
     # Create fitting predictor
-    x_train, x_test, y_train, y_test = create_training_data(data, num_cols, cat_cols, target)
+    from analysis.analysis import create_training_data
+    if prepare_data:
+        x_train, x_test, y_train, y_test = create_training_data(data, target, excluded_variables)
+    else:
+        x_train, x_test = data[0], data[1]
+        y_train, y_test = target[0], target[1]
+    print(f"Creating a random forest {model_subtype} model")
     if model_subtype in ["binary", "multi-class"]:
-        pred = RandomForestClassifier(random_state=0)
+        if criterion:
+            pred = RandomForestClassifier(random_state=0, n_estimators=n_estimators, criterion=criterion,
+                                          max_depth=max_depth, min_samples_leaf=min_samples_leaf,
+                                          max_features=max_features)
+        else:
+            pred = RandomForestClassifier(random_state=0, n_estimators=n_estimators, max_depth=max_depth,
+                                          min_samples_leaf=min_samples_leaf, max_features=max_features)
+
         # TODO check if this is really necessary
         y_train = y_train.astype("str")
         y_test = y_test.astype("str")
     else:
-        pred = RandomForestRegressor(random_state=0)
+        if criterion:
+            pred = RandomForestRegressor(random_state=0, n_estimators=n_estimators, criterion=criterion,
+                                         max_depth=max_depth, min_samples_leaf=min_samples_leaf,
+                                         max_features=max_features)
+        else:
+            pred = RandomForestRegressor(random_state=0, n_estimators=n_estimators, max_depth=max_depth,
+                                         min_samples_leaf=min_samples_leaf, max_features=max_features)
+
         y_train = y_train.astype("float")
         y_test = y_test.astype("float")
     if cv:
-        # TODO change to use cross validation
         if not cv_params:
             cv_params = {
                 "n_estimators": [10, 100, 1000],
@@ -39,11 +63,12 @@ def random_forest(data=None, num_cols=None, cat_cols=None, target=None, cv=True,
 
     if display:
         display_model_performance(pred, model_subtype, x_test, y_test, target)
-        display_feature_importances(pred, x_train, x_test, model_type="tree")
+        shap_values = display_feature_importances(pred, x_train, x_test, model_type="tree", return_shap=shap)
     else:
         print(f"Score: {pred.score(x_test, y_test)}")
         # TODO print additional information
-
+    if shap:
+        return pred, shap_values
     return pred
 
 
@@ -155,26 +180,16 @@ def plot_feature_importances(df, feature_importances, n_features=10):
 
 
 if __name__ == '__main__':
-    df_sars = load_data("walz_data.csv")
+    df_sars = load_data("walz_data.csv", na_values=["<NA>"])
 
-    excluded_categorical_columns = ['Patienten-ID', 'Eingabedatum', 'III.2Wann wurde der Abstrich durchgeführt(Datum)?',
-                                    'III.4b: wenn ja, seit wann(Datum)?']
-    # IGG Spike prediction dependencies to be removed
-    excluded_numerical_columns = ["VII.1B: OD IgG Spike 1 Protein rekombinant",
-                                  "VII.1C: OD IgG Nucleocapsid Protein rekombinant",
-                                  "VIII.1A: Bewertung IgG RBD Peptid rekombinant",
-                                  "VIII.1C: Bewertung IgG Nucleocapsid Protein rekombinant"]
-    # excluded_numerical_columns = []
-    num_columns, cat_columns = find_variables(df_sars,
-                                              excluded_categorical_columns,
-                                              excluded_numerical_columns,
-                                              min_available=20,
-                                              display=True
-                                              )
+    excluded_variables = ['Patienten-ID']
+
     print("Random forest main")
-    target = "IX.1C HLA"
+    binary_target = "Überhaput Antikörperantwort 0=nein"
+    multi_target = "III.6: Haben Sie sich krank gefühlt?"
     regr_target = "VII.1A: OD IgG RBD Peptid rekombinant"
+
 
     # random_forest_classifier(df_sars, num_columns, cat_columns, target)
     # random_forest_regressor(df_sars, num_columns, cat_columns, regr_target)
-    pred = random_forest(df_sars, num_columns, cat_columns, regr_target, cv=False)
+    pred, shap = random_forest(df_sars, regr_target, cv=False, shap=True)

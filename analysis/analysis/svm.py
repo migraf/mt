@@ -1,6 +1,59 @@
 from sklearn.svm import SVC, SVR
-from .util import create_training_data, find_variables
-from .process_data import load_data
+from analysis import *
+
+def svm(data, target, excluded_variables=[], prediction_type=None, kernel='rbf', C=1.0, degree=3,
+                 cv=True, cv_params=None, display=True, shap=True, prepare_data=True):
+    if prediction_type:
+        model_subtype = prediction_type
+    else:
+        model_subtype = detect_prediction_type(data, target)
+
+    # Create fitting predictor
+    from analysis.analysis import create_training_data
+    if prepare_data:
+        x_train, x_test, y_train, y_test = create_training_data(data, target, excluded_variables)
+    else:
+        x_train, x_test = data[0], data[1]
+        y_train, y_test = target[0], target[1]
+    print(f"Creating a linear {model_subtype} model")
+    if model_subtype in ["binary", "multi-class"]:
+        pred = SVC(kernel=kernel, C=C, degree=degree, probability=True)
+        y_train = y_train.astype("str")
+        y_test = y_test.astype("str")
+
+        # Kernel function for shap value prediction
+        f = lambda x: pred.predict_proba(x)[:,1]
+    else:
+        pred = SVR(kernel=kernel, C=C, degree=degree)
+        y_train = y_train.astype("float")
+        y_test = y_test.astype("float")
+
+    if cv:
+        # Perform cross validation hyper parameter tuning
+        if not cv_params:
+            cv_params = {
+                "C": [1, 10, 100],
+                "kernel": ["linear", "poly", "rbf", "sigmoid"],
+                "gamma": ["auto", "scale"]
+            }
+        pred, cv_results, param_results = cross_validation_tuning(pred, cv_params, x_train, y_train)
+        print(param_results)
+    else:
+        pred.fit(x_train, y_train)
+
+        if display:
+            display_model_performance(pred, model_subtype, x_test, y_test, target)
+            if model_subtype is not "regression":
+                shap_values = display_feature_importances(pred.predict_proba, x_train, x_test, return_shap=shap)
+            else:
+                shap_values = display_feature_importances(pred, x_train, x_test, return_shap=shap)
+        else:
+            print(f"Score: {pred.score(x_test, y_test)}")
+            # TODO print additional information
+        if shap:
+            return pred, shap_values
+        return pred
+
 
 
 def svm_classifier(data=None, num_cols=None, cat_cols=None, target=None, train_data=None, train_labels=None):
@@ -85,21 +138,15 @@ def svm_regression(data=None, num_cols=None, cat_cols=None, target=None, train_d
 
 
 if __name__ == '__main__':
-    target = "IX.1C HLA"
-    data = df_sars = load_data(
-        "C:\\hypothesis\\repositories\\server\\walzLabBackend\\notebook\\15052020SARS-CoV-2_final.xlsx")
+    df_sars = load_data("walz_data.csv", na_values=["<NA>"])
 
-    excluded_categorical_columns = ['Patienten-ID','Eingabedatum', 'III.2Wann wurde der Abstrich durchgeführt(Datum)?',
-                                    'III.4b: wenn ja, seit wann(Datum)?' ]
-    excluded_numerical_columns = []
+    excluded_variables = ['Patienten-ID']
+
+    print("Linear models main")
+    binary_target = "Überhaput Antikörperantwort 0=nein"
+    multi_target = "III.6: Haben Sie sich krank gefühlt?"
+    df_sars[multi_target] = df_sars[multi_target].astype("category")
     regr_target = "VII.1A: OD IgG RBD Peptid rekombinant"
 
-    num_columns, cat_columns = find_variables(df_sars,
-                                              excluded_categorical_columns,
-                                              excluded_numerical_columns,
-                                              min_available=20,
-                                              display=True
-                                              )
-    # svm_classifier(df_sars, num_columns, cat_columns, target)
-    svm_regression(df_sars, num_columns, cat_columns, regr_target)
+    svm(df_sars, binary_target, cv=False)
 

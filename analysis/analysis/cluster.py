@@ -17,7 +17,8 @@ import itertools
 from pprint import pprint
 
 
-def k_means_cluster(data=None, n_clusters=3, random_state=0, three_dimensional=True, max_iter=1000):
+def k_means_cluster(data, n_clusters, excluded_variables=[], prepare_data=True, random_state=0, max_iter=1000,
+                    display=True, dims=3, reduction_algorithm="isomap", evaluate_clusters=False, dim_red_params=None):
     """
     Attempts k means clustering for the selected data
     :param data:
@@ -26,16 +27,28 @@ def k_means_cluster(data=None, n_clusters=3, random_state=0, three_dimensional=T
     :rtype:
     """
     # Perform k means clustering
-    numpy_data = data.values
+
+    if prepare_data:
+        data = create_training_data(data, excluded_variables=excluded_variables, test_train_split=False)
+        numpy_data = data.values
+    else:
+        numpy_data = data.values
     # TODO give more configuration options
     kmeans = KMeans(n_clusters=n_clusters, random_state=random_state, max_iter=max_iter).fit(numpy_data)
-
     labels = kmeans.predict(numpy_data)
-    plot_clusters(numpy_data, labels, three_d=three_dimensional)
+    if display:
+        plot_clusters(numpy_data, labels, dims=dims, reduction_algorithm=reduction_algorithm)
+    if evaluate_clusters:
+        cluster_dfs = extract_clusters(data, labels)
+        comparison_result = compare_clusters(data, cluster_dfs)
+        pprint(comparison_result)
+
     return labels
 
 
-def gmm_cluster(data=None, n_models=3, three_dimensional=True, max_iter=1000):
+def gmm_cluster(data, n_clusters, covariance_type="full", excluded_variables=[], prepare_data=True, random_state=0,
+                max_iter=1000, display=True, dims=3, reduction_algorithm="isomap", evaluate_clusters=False,
+                dim_red_params=None):
     """
     Attempt clustering using Gaussian Mixture Models and different variations of
     Expectation Maximization Algorithms
@@ -43,26 +56,37 @@ def gmm_cluster(data=None, n_models=3, three_dimensional=True, max_iter=1000):
     :type max_iter:
     :param three_dimensional:
     :type three_dimensional:
-    :param n_models:
-    :type n_models:
+    :param n_clusters:
+    :type n_clusters:
     :param data:
     :type data:
     :return:
     :rtype:
     """
-    numpy_data = data.values
-    # TODO give more configuration options
-    gmm = GaussianMixture(n_components=n_models,
-                          covariance_type="full",
+    if prepare_data:
+        data = create_training_data(data, excluded_variables=excluded_variables, test_train_split=False)
+        numpy_data = data.values
+    else:
+        numpy_data = data.values
+    gmm = GaussianMixture(n_components=n_clusters,
+                          covariance_type=covariance_type,
                           max_iter=max_iter).fit(numpy_data)
     # Get the number/names of the cluster
     labels = gmm.predict(numpy_data)
     # Create a figure with the data grouped by associated cluster
-    plot_clusters(numpy_data, labels, three_d=three_dimensional)
+    if display:
+        plot_clusters(numpy_data, labels, dims=dims, reduction_algorithm=reduction_algorithm)
+    if evaluate_clusters:
+        cluster_dfs = extract_clusters(data, labels)
+        comparison_result = compare_clusters(data, cluster_dfs)
+        pprint(comparison_result)
+
     return labels
 
 
-def vbgmm_cluster(data=None, n_models=3, three_dimensional=True, max_iter=1000):
+def vbgmm_cluster(data, n_clusters, covariance_type="full", weight_concentration_prior=None, excluded_variables=[],
+                  prepare_data=True, random_state=0, max_iter=1000, display=True, dims=3, reduction_algorithm="isomap",
+                  evaluate_clusters=False, dim_red_params=None):
     """
     Perform clustering using a variational bayesian gaussian mixture
     :param max_iter:
@@ -76,20 +100,32 @@ def vbgmm_cluster(data=None, n_models=3, three_dimensional=True, max_iter=1000):
     :return:
     :rtype:
     """
-    numpy_data = data.values
+    if prepare_data:
+        data = create_training_data(data, excluded_variables=excluded_variables, test_train_split=False)
+        numpy_data = data.values
+    else:
+        numpy_data = data.values
     # TODO give more configuration options
-    bgmm = BayesianGaussianMixture(n_components=n_models,
-                                   covariance_type="full",
-                                   weight_concentration_prior=0.001,
+    bgmm = BayesianGaussianMixture(n_components=n_clusters,
+                                   covariance_type=covariance_type,
+                                   weight_concentration_prior=weight_concentration_prior,
                                    max_iter=max_iter).fit(numpy_data)
     # Get the number/names of the cluster
     labels = bgmm.predict(numpy_data)
-    # Create a figure with the data grouped by associated cluster
-    plot_clusters(numpy_data, labels, three_d=three_dimensional)
+
+    if display:
+        plot_clusters(numpy_data, labels, dims=dims, reduction_algorithm=reduction_algorithm)
+    if evaluate_clusters:
+        cluster_dfs = extract_clusters(data, labels)
+        comparison_result = compare_clusters(data, cluster_dfs)
+        pprint(comparison_result)
+
     return labels
 
 
-def umap_clustering(data, min_cluster_size=30):
+def hdbscan_clustering(data, min_cluster_size, min_samples=None, excluded_variables=[],
+                  prepare_data=True, random_state=0, max_iter=1000, display=True, dims=3, reduction_algorithm="isomap",
+                  evaluate_clusters=False, dim_red_params=None):
     """
     Perform clustering using hdb scan while at the same time reducing the dimensions using umap
     :param data: data to cluster
@@ -99,47 +135,38 @@ def umap_clustering(data, min_cluster_size=30):
     :return:
     :rtype:
     """
-    # TODO split into dimensionality reduction and hdbscan clustering
-    clusterable_embedding = umap.UMAP(
-        n_neighbors=30,
-        min_dist=0.0,
-        n_components=50,
-        random_state=42,
-    ).fit_transform(data)
-    plot_data = umap.UMAP(
-        n_neighbors=30,
-        min_dist=0.0,
-        n_components=3,
-        random_state=42,
-    ).fit_transform(data)
+
+    if prepare_data:
+        data = create_training_data(data, excluded_variables=excluded_variables, test_train_split=False)
+        numpy_data = data.values
+    else:
+        numpy_data = data.values
+
     labels = hdbscan.HDBSCAN(
-        min_samples=5,
+        min_samples=min_samples,
         min_cluster_size=min_cluster_size,
-    ).fit_predict(clusterable_embedding)
+    ).fit_predict(numpy_data)
+    print(labels)
 
-    fig = go.Figure()
+    if display:
+        plot_clusters(numpy_data, labels, dims=dims, reduction_algorithm=reduction_algorithm)
+    if evaluate_clusters:
+        cluster_dfs = extract_clusters(data, labels)
+        comparison_result = compare_clusters(data, cluster_dfs)
+        pprint(comparison_result)
 
-    fig.add_trace(go.Scatter3d(x=plot_data[:, 0],
-                               y=plot_data[:, 1],
-                               z=plot_data[:, 2],
-                               name=f"Umap HDB Scan clustering",
-                               mode="markers",
-                               marker_color=labels
-                               )
-                  )
-    fig.show()
-    return clusterable_embedding, labels
+    return labels
     # plot_clusters(data, labels)
 
 
-def plot_clusters(data, clusters, three_d=True, reduction_algorithm="isomap"):
+def plot_clusters(data, clusters, dims=3, reduction_algorithm="isomap"):
     """
     Visualize the data from clustering in either a two dimensional or three dimensional scatter plot,
     based on the clusters. To display the data dimensionality reduction techniques are applied.
     :param reduction_algorithm:
     :type reduction_algorithm:
-    :param three_d:
-    :type three_d:
+    :param dims:
+    :type dims:
     :param data: data used for calculating the clusters as well as performing dimensionality reduction
     :type data:
     :param clusters: the clusters found by the clustering algorithm
@@ -149,41 +176,29 @@ def plot_clusters(data, clusters, three_d=True, reduction_algorithm="isomap"):
     """
     fig = go.Figure()
     # Create three dimensional scatter plot
-    if three_d:
-        # perform dimensionality reduction via pca
-        # if reduction_algorithm == "pca":
-        #     pca = PCA(n_components=3)
-        #     pca.fit(data)
-        #     mapped_components = pca.components_.dot(data.T)
-        # elif reduction_algorithm == "tsne":
-        #     pass
-        # Create traces based on clusters
-        mapped_components, _ = reduce_dims(data, reduction_algorithm=reduction_algorithm)
+    if dims == 3:
+        mapped_components = reduce_dims(data, dims=dims, reduction_algorithm=reduction_algorithm)
         for cluster in np.unique(clusters):
             fig.add_trace(go.Scatter3d(x=mapped_components[:, 0][clusters == cluster],
                                        y=mapped_components[:, 1][clusters == cluster],
                                        z=mapped_components[:, 2][clusters == cluster],
-                                       name=f"Cluster {int(cluster) + 1}",
+                                       name=f"Cluster {int(cluster)}",
                                        mode="markers",
                                        marker=dict(
                                            size=4),
                                        )
                           )
-    else:
-        # create 2d scatter plot
-        if reduction_algorithm == "pca":
-            pca = PCA(n_components=2)
-            pca.fit(data)
-            mapped_components = pca.components_.dot(data.T)
-        elif reduction_algorithm == "tsne":
-            pass
+    elif dims == 2:
+        mapped_components = reduce_dims(data, dims=dims, reduction_algorithm=reduction_algorithm)
         for cluster in np.unique(clusters):
-            fig.add_trace(go.Scatter(x=mapped_components[:, clusters == cluster][0],
-                                     y=mapped_components[:, clusters == cluster][1],
-                                     name=f"Cluster {int(cluster) + 1}",
+            fig.add_trace(go.Scatter(x=mapped_components[:, 0][clusters == cluster],
+                                     y=mapped_components[:, 1][clusters == cluster],
+                                     name=f"Cluster {int(cluster)}",
                                      mode="markers"
                                      )
                           )
+    else:
+        raise ValueError(f"dims = {dims}, but visualization is only possible for 2 or 3 dimensions")
 
     fig.show()
 
@@ -275,7 +290,7 @@ def compare_clusters(data, cluster_dfs, n=20):
     for res in between_cluster_results.keys():
         for cl in between_cluster_results[res].keys():
             between_cluster_results[res][cl] = sorted(between_cluster_results[res][cl], key=lambda x: x["p-Value"])[:n]
-    results["between_cluster_results"] =  between_cluster_results
+    results["between_cluster_results"] = between_cluster_results
 
     return results
 
@@ -311,19 +326,10 @@ def extract_clusters(df, clusters, selected_clusters=None, save=True):
 if __name__ == '__main__':
     df_sars = load_data("walz_data.csv")
 
-    excluded_categorical_columns = ['Patienten-ID', ]
-    excluded_numerical_columns = []
-
-    num_columns, cat_columns = find_variables(df_sars,
-                                              excluded_categorical_columns,
-                                              excluded_numerical_columns,
-                                              min_available=20,
-                                              display=True
-                                              )
-    cluster_df = create_training_data(df_sars, num_columns, cat_columns, test_train_split=False)
-    # k_means_cluster(cluster_df)
-    # gmm_cluster(data=dummy_df)
-    clusters = vbgmm_cluster(data=cluster_df, n_models=3)
-    # umap_clustering(cluster_df, 7)
-    cluster_dfs = extract_clusters(cluster_df, clusters)
-    pprint(compare_clusters(cluster_df, cluster_dfs))
+    # clusters = k_means_cluster(df_sars, n_clusters=3, prepare_data=True, dims=2, evaluate_clusters=False)
+    # print(clusters)
+    # clusters = gmm_cluster(df_sars, n_clusters=3, prepare_data=True, dims=2, evaluate_clusters=False)
+    # clusters = vbgmm_cluster(df_sars, n_clusters=3, prepare_data=True, dims=2, evaluate_clusters=False)
+    clusters = hdbscan_clustering(df_sars, min_cluster_size=3, min_samples=1, dims=2, evaluate_clusters=False)
+    # cluster_dfs = extract_clusters(cluster_df, clusters)
+    # pprint(compare_clusters(cluster_df, cluster_dfs))

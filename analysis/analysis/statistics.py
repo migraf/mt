@@ -5,6 +5,8 @@ from analysis import *
 from collections import Counter
 import scikit_posthocs as sp
 from itertools import combinations
+from pandas.api.types import is_numeric_dtype
+import plotly.graph_objects as go
 
 
 class StatisticsError(Exception):
@@ -45,14 +47,14 @@ def conditional_entropy(x, y, nan_strategy="replace", nan_replace_value="0.0"):
     return entropy
 
 
-def theils_u(x, y, nan_strategy="replace", nan_replace_value="0.0"):
+def theils_u(var1, var2, nan_strategy="replace", nan_replace_value="0.0"):
     """
     Calculate Theil's U uncertainty coefficient for cross categorical association
     --> Uncertainty of x given y
-    :param x: categorical series
-    :type x: pd.Series
-    :param y: categorical series
-    :type y: pd.Series
+    :param var1: categorical series
+    :type var1: pd.Series
+    :param var2: categorical series
+    :type var2: pd.Series
     :param nan_strategy: How to handel nan values
     :type nan_strategy:
     :param nan_replace_value: default value for replacing nan values
@@ -62,11 +64,11 @@ def theils_u(x, y, nan_strategy="replace", nan_replace_value="0.0"):
     """
     # TODO add options for different na handling strategies
     if nan_strategy == "replace":
-        x = x.fillna(nan_replace_value)
-        y = y.fillna(nan_replace_value)
+        var1 = var1.fillna(nan_replace_value)
+        var2 = var2.fillna(nan_replace_value)
 
-    s_xy = conditional_entropy(x, y, nan_strategy, nan_replace_value)
-    x_counter = Counter(x)
+    s_xy = conditional_entropy(var1, var2, nan_strategy, nan_replace_value)
+    x_counter = Counter(var1)
     total = sum(x_counter.values())
     p_x = list(map(lambda n: n / total, x_counter.values()))
     s_x = ss.entropy(p_x)
@@ -220,9 +222,16 @@ def numerical_correlation(data, var1, var2, values=False):
     """
     if values:
         selector = data[var1].notnull() & data[var2].notnull()
-        pearson_r, pearson_p = ss.pearsonr(data[var1][selector], data[var2][selector])
-        if values:
+
+        ks_1, shapiro_p_1 = ss.shapiro(data[var1][data[var1].notnull()])
+        ks_2, shapiro_p_2 = ss.shapiro(data[var2][data[var2].notnull()])
+        if shapiro_p_1 > 0.05 and shapiro_p_2 > 0.05:
+
+            pearson_r, pearson_p = ss.pearsonr(data[var1][selector], data[var2][selector])
             return pearson_r, pearson_p
+        else:
+            rho, spearman_p = ss.spearmanr(data[var1][selector], data[var2][selector])
+            return rho, spearman_p
 
     # Check if variables are normally distributed
     ks_1, shapiro_p_1 = ss.shapiro(data[var1][data[var1].notnull()])
@@ -245,7 +254,60 @@ def numerical_correlation(data, var1, var2, values=False):
     return output
 
 
-def test_battery(data, dict, variables, save=True):
+def dependance_heatmap(data, variables, save=True):
+    """
+    Create a heatmap showing dependencies between variables and which test was used to determine it
+    :param data:
+    :param variables:
+    :return:
+    """
+    results = np.zeros((len(variables), len(variables)))
+    for i, v1 in enumerate(variables):
+        for j, v2 in enumerate(variables):
+            if is_numeric_dtype(data[v1]) and is_numeric_dtype(data[v2]):
+                r, p = numerical_correlation(data, v1, v2, values=True)
+            
+            elif is_numeric_dtype(data[v1]) and not is_numeric_dtype(data[v2]):
+                groups = []
+                for idx, group in data.groupby(v2):
+                    groups.append(group[v1][group[v1].notnull()])
+                if ss.shapiro(data[v1][data[v1].notnull()])[1] > 0.05:
+                    r, p = ss.f_oneway(*groups)
+                else:
+                    r, p = ss.kruskal(*groups)
+
+            elif is_numeric_dtype(data[v2]) and not is_numeric_dtype(data[v1]):
+                groups = []
+                for idx, group in data.groupby(v1):
+                    groups.append(group[v2][group[v2].notnull()])
+                if ss.shapiro(data[v2][data[v2].notnull()])[1] > 0.05:
+                    r, p = ss.f_oneway(*groups)
+                else:
+                    r, p = ss.kruskal(*groups)
+            else:
+                p = theils_u(data[v1][data[v1].notnull()], data[v2][data[v2].notnull()])
+
+
+
+            results[i][j] = p
+
+            if i == j:
+                results[i][j] = 0.0
+
+    fig = go.Figure(data=go.Heatmap(
+        z=results))
+    fig.show()
+
+    if save:
+        fig.write_image("dependance_heatmap.png")
+    print(results)
+
+
+
+
+
+
+def test_battery(data, variables, save=True):
     """
     Calculate appropriate test statistics for all combinations in the given list of variables and display the results
     and save the results to a file if desired.
@@ -281,31 +343,19 @@ def test_battery(data, dict, variables, save=True):
     if save:
         with open("output.txt", "w") as f:
             f.write(output)
-
+    print(output)
     return output
 
 
 if __name__ == '__main__':
-    df_sars, sars_dict = load_data(
-        "C:\\hypothesis\\repositories\\server\\walzLabBackend\\flaskr\\user_data\\Datentabelle_CoVid19_SARS_new.xlsx",
-        two_sheets=True)
-    print(list(df_sars.columns))
-    # print("Theils u:")
-    # theils_coef = theils_u(df_sars["IX.2C"], df_sars["Geschlecht"])
-    # corr = calculate_categorical_correlation(df, categorical_columns)
-    # print(corr)
-    chi2, chi_p, dof = chi_2(df_sars, "Geschlecht", "III.7")
-    print(chi2, chi_p, dof)
-    # odds, p = fishers_exact(df, "positive", "Geschlecht")
-    # print(odds, p)
-    # print(list(df_sars["III.7"]))
-    # kruskal_columns = ["Geschlecht", "VII.2A"]
-    # kruskal_wallis(df_sars, "Geschlecht", "VII.2A")
-    print(kruskal_wallis(df_sars, "III.7", "VII.2A"))
-    # wilcoxon(df_sars, "Geschlecht", "VII.1C")
-    print(ss.shapiro(df_sars['VII.2A'][df_sars['VII.2A'].notnull()]))
-    variables = ['VII.1A', 'VII.1B', 'VII.1C', 'VII.2A', 'VII.2B', 'VII.2C', 'Geschlecht',
-                 'III.7', 'III.8', 'III.10', 'III.11', 'III.12', 'IX.1A', 'IX.2A', 'IX.1B', 'IX.2B', 'IX.1C', 'IX.2C']
-    output = test_battery(df_sars, sars_dict, variables)
-    print(numerical_correlation(df_sars, 'VII.1C', 'VII.2A'))
-    # print(output)
+    df_sars = load_data("walz_data.csv")
+    num_vars, cat_vars = find_variables(df_sars)
+
+    vars = ['VII.3A: OD IgA RBD Peptid rekombinant', 'VII.3B: OD IgA Spike 1 Protein rekombinant',
+            'VII.3C: OD IgA Nucleocapsid Protein rekombinant', 'VIII.1A: Bewertung IgG RBD Peptid rekombinant',
+            'VIII.1B: Bewertung IgG Spike 1 Protein rekombinant',
+            'VIII.1C: Bewertung IgG Nucleocapsid Protein rekombinant', 'Geschlecht',
+            'III.12: Hatten Sie Geruchs- oderGeschmacksstörungen? 2 2'
+            ]
+    dependance_heatmap(df_sars, vars)
+

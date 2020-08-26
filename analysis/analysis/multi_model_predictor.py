@@ -4,6 +4,12 @@ import plotly.graph_objects as go
 from scipy import stats
 
 
+def multi_model_predictor(data, target, excluded_variables=[], prediction_type=None, linear_model_params=None,
+                          svm_params=None, random_forest_params=None, gradient_boosting_params=None, cv=True,
+                          cv_params=None, display=True, shap=True, prepare_data=True):
+    pass
+
+
 class MultiModelPredictor:
     def __init__(self, data, num_cols, cat_cols, target, mode=None):
         self.data = data
@@ -63,7 +69,7 @@ class MultiModelPredictor:
                     print(f"Elasticnet result: {elastic_net_model.score(x_test, y_test)}")
                     print("Training SVM model")
                     svm_regressor = svm_regression(train_data=x_train, train_labels=y_train)
-                    print(f"SVM model result: {svm_regressor.score(x_test,y_test)}")
+                    print(f"SVM model result: {svm_regressor.score(x_test, y_test)}")
                     print(f"Training Random Forest Regressor")
                     rf_regressor = random_forest_regressor(train_data=x_train, train_labels=y_train)
                     print(f"Random Forest Results: {rf_regressor.score(x_test, y_test)}")
@@ -119,10 +125,6 @@ class MultiModelPredictor:
 
             self.display_results(predictions, y_test, self.mode)
 
-
-
-
-
     def display_results(self, predictions, true, mode, save=True):
         """
 
@@ -170,11 +172,6 @@ class MultiModelPredictor:
 
         if save:
             fig_pred.write_image("prediction_scatter.png")
-
-
-
-
-
 
 
 if __name__ == '__main__':

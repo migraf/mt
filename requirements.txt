@@ -13,3 +13,7 @@ ipywidgets
 seaborn
 umap-learn
 hdbscan
+kaleido
+psutil
+statsmodels
+sqlalchemy

@@ -10,6 +10,14 @@ from analysis import *
 from catboost.utils import get_roc_curve, get_confusion_matrix
 
 
+def gradient_boosted_trees(data, target, excluded_variables=[], prediction_type=None,
+                            cv=True, cv_params=None, display=True, shap=True, prepare_data=True):
+    # TODO create pool based on scaled numerical variables and categorical variables
+    pass
+
+
+
+
 def gradient_boosting_regressor(data, excluded_num_cols, excluded_cat_cols, target, tune_parameters=False,
                                 test_data=None, display_results=True):
     """

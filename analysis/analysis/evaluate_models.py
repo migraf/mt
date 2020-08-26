@@ -211,7 +211,7 @@ def evaluate_binary_prediction():
     results["elastic_net"]["tuned"]["params"] = elastic_tuned_params
 
     # Store results in file
-    with open("regression_results_subset.json", "w") as br:
+    with open("../../results/regression_results_subset.json", "w") as br:
         json.dump(results, br, indent=4)
 
 

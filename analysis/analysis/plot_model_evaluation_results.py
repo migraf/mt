@@ -4,47 +4,47 @@ import numpy as np
 
 # Load model results
 
-with open("binary_results.json", "r") as result:
+with open("../../results/binary_results.json", "r") as result:
     binary_results = json.load(result)
-with open("binary_results_subset.json", "r") as result:
+with open("../../results/binary_results_subset.json", "r") as result:
     binary_results_subset = json.load(result)
-with open("multiclass_results.json", "r") as br:
+with open("../../results/multiclass_results.json", "r") as br:
     multiclass_result = json.load(br)
-with open("regression_results.json", "r") as br:
+with open("../../results/regression_results.json", "r") as br:
     regression_result = json.load(br)
-with open("regression_results_subset.json", "r") as br:
+with open("../../results/regression_results_subset.json", "r") as br:
     regression_result_subset = json.load(br)
 
 # Calculate Performance statistics
-svm_acc = np.mean(binary_results_subset["svm"]["untuned"]["scores"])
-svm_std = np.std(binary_results_subset["svm"]["untuned"]["scores"])
-svm_time = np.mean(binary_results_subset["svm"]["untuned"]["times"])
-svm_time_std = np.std(binary_results_subset["svm"]["untuned"]["times"])
+svm_acc = np.mean(regression_result["svm"]["untuned"]["scores"])
+svm_std = np.std(regression_result["svm"]["untuned"]["scores"])
+svm_time = np.mean(regression_result["svm"]["untuned"]["times"])
+svm_time_std = np.std(regression_result["svm"]["untuned"]["times"])
 print(f'SVM Binary - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(binary_results_subset["svm"]["tuned"]["scores"])
-svm_std = np.std(binary_results_subset["svm"]["tuned"]["scores"])
-svm_time = np.mean(binary_results_subset["svm"]["tuned"]["times"])
-svm_time_std = np.std(binary_results_subset["svm"]["tuned"]["times"])
+svm_acc = np.mean(regression_result["svm"]["tuned"]["scores"])
+svm_std = np.std(regression_result["svm"]["tuned"]["scores"])
+svm_time = np.mean(regression_result["svm"]["tuned"]["times"])
+svm_time_std = np.std(regression_result["svm"]["tuned"]["times"])
 print(f'SVM Binary tuned - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(binary_results_subset["random_forest"]["untuned"]["scores"])
-svm_std = np.std(binary_results_subset["random_forest"]["untuned"]["scores"])
-svm_time = np.mean(binary_results_subset["random_forest"]["untuned"]["times"])
-svm_time_std = np.std(binary_results_subset["random_forest"]["untuned"]["times"])
+svm_acc = np.mean(regression_result["random_forest"]["untuned"]["scores"])
+svm_std = np.std(regression_result["random_forest"]["untuned"]["scores"])
+svm_time = np.mean(regression_result["random_forest"]["untuned"]["times"])
+svm_time_std = np.std(regression_result["random_forest"]["untuned"]["times"])
 print(f'RF Binary - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(binary_results_subset["random_forest"]["tuned"]["scores"])
-svm_std = np.std(binary_results_subset["random_forest"]["tuned"]["scores"])
-svm_time = np.mean(binary_results_subset["random_forest"]["tuned"]["times"])
-svm_time_std = np.std(binary_results_subset["random_forest"]["tuned"]["times"])
+svm_acc = np.mean(regression_result["random_forest"]["tuned"]["scores"])
+svm_std = np.std(regression_result["random_forest"]["tuned"]["scores"])
+svm_time = np.mean(regression_result["random_forest"]["tuned"]["times"])
+svm_time_std = np.std(regression_result["random_forest"]["tuned"]["times"])
 print(f'RF Binary tuned - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(binary_results_subset["gradient_boosting"]["untuned"]["scores"])
-svm_std = np.std(binary_results_subset["gradient_boosting"]["untuned"]["scores"])
-svm_time = np.mean(binary_results_subset["gradient_boosting"]["untuned"]["times"])
-svm_time_std = np.std(binary_results_subset["gradient_boosting"]["untuned"]["times"])
+svm_acc = np.mean(regression_result["gradient_boosting"]["untuned"]["scores"])
+svm_std = np.std(regression_result["gradient_boosting"]["untuned"]["scores"])
+svm_time = np.mean(regression_result["gradient_boosting"]["untuned"]["times"])
+svm_time_std = np.std(regression_result["gradient_boosting"]["untuned"]["times"])
 print(f'GB Binary - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(binary_results_subset["gradient_boosting"]["tuned"]["scores"])
-svm_std = np.std(binary_results_subset["gradient_boosting"]["tuned"]["scores"])
-svm_time = np.mean(binary_results_subset["gradient_boosting"]["tuned"]["times"])
-svm_time_std = np.std(binary_results_subset["gradient_boosting"]["tuned"]["times"])
+svm_acc = np.mean(regression_result["gradient_boosting"]["tuned"]["scores"])
+svm_std = np.std(regression_result["gradient_boosting"]["tuned"]["scores"])
+svm_time = np.mean(regression_result["gradient_boosting"]["tuned"]["times"])
+svm_time_std = np.std(regression_result["gradient_boosting"]["tuned"]["times"])
 print(f'GB Binary tuned - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
 
 
