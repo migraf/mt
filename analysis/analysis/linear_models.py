@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 
 from analysis import *
 
+from util import detect_prediction_type, cross_validation_tuning
+
 
 def linear_model(data, target, excluded_variables=[], prediction_type=None, l1_ratio=0.2, max_iter=1000,
                  cv=True, cv_params=None, display=True, shap=True, prepare_data=True):
@@ -55,18 +57,18 @@ def linear_model(data, target, excluded_variables=[], prediction_type=None, l1_r
     else:
         pred.fit(x_train, y_train)
 
-        if display:
-            display_model_performance(pred, model_subtype, x_test, y_test, target)
-            if model_subtype is not "regression":
-                shap_values = display_feature_importances(pred.predict_proba, x_train, x_test, return_shap=shap)
-            else:
-                shap_values = display_feature_importances(pred, x_train, x_test, return_shap=shap)
+    if display:
+        display_model_performance(pred, model_subtype, x_test, y_test, target)
+        if model_subtype != "regression":
+            shap_values = display_feature_importances(pred.predict_proba, x_train, x_test, return_shap=shap)
         else:
-            print(f"Score: {pred.score(x_test, y_test)}")
-            # TODO print additional information
-        if shap:
-            return pred, shap_values
-        return pred
+            shap_values = display_feature_importances(pred.predict, x_train, x_test, return_shap=shap)
+    else:
+        print(f"Score: {pred.score(x_test, y_test)}")
+        # TODO print additional information
+    if shap:
+        return pred, shap_values
+    return pred
 
 
 

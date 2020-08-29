@@ -6,116 +6,142 @@ import numpy as np
 
 with open("../../results/binary_results.json", "r") as result:
     binary_results = json.load(result)
-with open("../../results/binary_results_subset.json", "r") as result:
-    binary_results_subset = json.load(result)
 with open("../../results/multiclass_results.json", "r") as br:
     multiclass_result = json.load(br)
 with open("../../results/regression_results.json", "r") as br:
     regression_result = json.load(br)
-with open("../../results/regression_results_subset.json", "r") as br:
-    regression_result_subset = json.load(br)
 
-# Calculate Performance statistics
-svm_acc = np.mean(regression_result["svm"]["untuned"]["scores"])
-svm_std = np.std(regression_result["svm"]["untuned"]["scores"])
-svm_time = np.mean(regression_result["svm"]["untuned"]["times"])
-svm_time_std = np.std(regression_result["svm"]["untuned"]["times"])
-print(f'SVM Binary - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(regression_result["svm"]["tuned"]["scores"])
-svm_std = np.std(regression_result["svm"]["tuned"]["scores"])
-svm_time = np.mean(regression_result["svm"]["tuned"]["times"])
-svm_time_std = np.std(regression_result["svm"]["tuned"]["times"])
-print(f'SVM Binary tuned - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(regression_result["random_forest"]["untuned"]["scores"])
-svm_std = np.std(regression_result["random_forest"]["untuned"]["scores"])
-svm_time = np.mean(regression_result["random_forest"]["untuned"]["times"])
-svm_time_std = np.std(regression_result["random_forest"]["untuned"]["times"])
-print(f'RF Binary - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(regression_result["random_forest"]["tuned"]["scores"])
-svm_std = np.std(regression_result["random_forest"]["tuned"]["scores"])
-svm_time = np.mean(regression_result["random_forest"]["tuned"]["times"])
-svm_time_std = np.std(regression_result["random_forest"]["tuned"]["times"])
-print(f'RF Binary tuned - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(regression_result["gradient_boosting"]["untuned"]["scores"])
-svm_std = np.std(regression_result["gradient_boosting"]["untuned"]["scores"])
-svm_time = np.mean(regression_result["gradient_boosting"]["untuned"]["times"])
-svm_time_std = np.std(regression_result["gradient_boosting"]["untuned"]["times"])
-print(f'GB Binary - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
-svm_acc = np.mean(regression_result["gradient_boosting"]["tuned"]["scores"])
-svm_std = np.std(regression_result["gradient_boosting"]["tuned"]["scores"])
-svm_time = np.mean(regression_result["gradient_boosting"]["tuned"]["times"])
-svm_time_std = np.std(regression_result["gradient_boosting"]["tuned"]["times"])
-print(f'GB Binary tuned - Accuracy: {svm_acc}, std: {svm_std} - Time: {svm_time} std: {svm_time_std}')
+def print_summary_statistics(results):
+    # Calculate Performance statistics
+    svm_acc = np.mean(results["svm"]["untuned"]["scores"])
+    svm_std = np.std(results["svm"]["untuned"]["scores"])
+    svm_time = np.mean(results["svm"]["untuned"]["times"])
+    svm_time_std = np.std(results["svm"]["untuned"]["times"])
+    print(f'SVM - Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time,3)}'
+          f' std: {round(svm_time_std,3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time,3)}")
+    svm_acc = np.mean(results["svm"]["tuned"]["scores"])
+    svm_std = np.std(results["svm"]["tuned"]["scores"])
+    svm_time = np.mean(results["svm"]["tuned"]["times"])
+    svm_time_std = np.std(results["svm"]["tuned"]["times"])
+    print(f'SVM tuned- Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
+    svm_acc = np.mean(results["random_forest"]["untuned"]["scores"])
+    svm_std = np.std(results["random_forest"]["untuned"]["scores"])
+    svm_time = np.mean(results["random_forest"]["untuned"]["times"])
+    svm_time_std = np.std(results["random_forest"]["untuned"]["times"])
+    print(f'RF - Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
+    svm_acc = np.mean(results["random_forest"]["tuned"]["scores"])
+    svm_std = np.std(results["random_forest"]["tuned"]["scores"])
+    svm_time = np.mean(results["random_forest"]["tuned"]["times"])
+    svm_time_std = np.std(results["random_forest"]["tuned"]["times"])
+    print(f'RF tuned- Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
+    svm_acc = np.mean(results["gradient_boosting"]["untuned"]["scores"])
+    svm_std = np.std(results["gradient_boosting"]["untuned"]["scores"])
+    svm_time = np.mean(results["gradient_boosting"]["untuned"]["times"])
+    svm_time_std = np.std(results["gradient_boosting"]["untuned"]["times"])
+    print(f'GB - Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
+    svm_acc = np.mean(results["gradient_boosting"]["tuned"]["scores"])
+    svm_std = np.std(results["gradient_boosting"]["tuned"]["scores"])
+    svm_time = np.mean(results["gradient_boosting"]["tuned"]["times"])
+    svm_time_std = np.std(results["gradient_boosting"]["tuned"]["times"])
+    print(f'GB tuned - Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
+    svm_acc = np.mean(results["linear_models"]["untuned"]["scores"])
+    svm_std = np.std(results["linear_models"]["untuned"]["scores"])
+    svm_time = np.mean(results["linear_models"]["untuned"]["times"])
+    svm_time_std = np.std(results["linear_models"]["untuned"]["times"])
+    print(f'LM - Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
+    svm_acc = np.mean(results["linear_models"]["tuned"]["scores"])
+    svm_std = np.std(results["linear_models"]["tuned"]["scores"])
+    svm_time = np.mean(results["linear_models"]["tuned"]["times"])
+    svm_time_std = np.std(results["linear_models"]["tuned"]["times"])
+    print(f'LM tuned - Accuracy: {round(svm_acc, 3)}, std: {round(svm_std, 3)} - Time: {round(svm_time, 3)}'
+          f' std: {round(svm_time_std, 3)}')
+    print(f"& {round(svm_acc, 3)} & {round(svm_std, 3)} & {round(svm_time, 3)}")
 
 
-# Create overview plot
-fig = go.Figure()
 
-# SVM results
-svm_results_y = binary_results["svm"]["untuned"]["scores"] + binary_results_subset["svm"]["untuned"]["scores"] + \
-                multiclass_result["svm"]["untuned"]["scores"] + regression_result["svm"]["untuned"]["scores"] +\
-                regression_result_subset["svm"]["untuned"]["scores"]
+def plot_model_results():
 
-x = ["Binary" for i in range(50)] + ["Binary (subset)" for i in range(50)] + ["Multi-Class" for i in range(50)] + \
-    ["Regression" for i in range(50)] + ["Regression (subset)" for i in range(50)]
+    # Create overview plot
+    fig = go.Figure()
 
-fig.add_trace(go.Box(y=svm_results_y, x=x, name="SVM default"))
+    # SVM results
+    svm_results_y = binary_results["svm"]["untuned"]["scores"] + multiclass_result["svm"]["untuned"]["scores"] + \
+                    regression_result["svm"]["untuned"]["scores"]
 
-svm_results_tuned_y = binary_results["svm"]["tuned"]["scores"] + binary_results_subset["svm"]["tuned"]["scores"] + \
-                      multiclass_result["svm"]["tuned"]["scores"] + regression_result["svm"]["tuned"]["scores"] + \
-                      regression_result_subset["svm"]["tuned"]["scores"]
+    x = ["Binary" for i in range(20)] + ["Multi-Class" for i in range(20)] + ["Regression" for i in range(50)]
 
-fig.add_trace(go.Box(y=svm_results_tuned_y, x=x, name="SVM tuned"))
+    fig.add_trace(go.Box(y=svm_results_y, x=x, name="SVM default"))
 
-# Random Forest Results
-rf_results_y = binary_results["random_forest"]["untuned"]["scores"] + \
-               binary_results_subset["random_forest"]["untuned"]["scores"] + \
-               multiclass_result["random_forest"]["untuned"]["scores"] + \
-               regression_result["random_forest"]["untuned"]["scores"] + \
-               regression_result_subset["random_forest"]["untuned"]["scores"]
+    svm_results_tuned_y = binary_results["svm"]["tuned"]["scores"] + multiclass_result["svm"]["tuned"]["scores"] + \
+                          regression_result["svm"]["tuned"]["scores"]
 
-fig.add_trace(go.Box(y=rf_results_y, x=x, name="RF default"))
+    fig.add_trace(go.Box(y=svm_results_tuned_y, x=x, name="SVM tuned"))
 
-rf_results_tuned_y = binary_results["random_forest"]["tuned"]["scores"] + \
-                     binary_results_subset["random_forest"]["tuned"]["scores"] + \
-                     multiclass_result["random_forest"]["tuned"]["scores"] + \
-                     regression_result["random_forest"]["tuned"]["scores"] + \
-                     regression_result_subset["random_forest"]["tuned"]["scores"]
+    # Random Forest Results
+    rf_results_y = binary_results["random_forest"]["untuned"]["scores"] + \
+                   multiclass_result["random_forest"]["untuned"]["scores"] + \
+                   regression_result["random_forest"]["untuned"]["scores"]
 
-fig.add_trace(go.Box(y=rf_results_tuned_y, x=x, name="RF tuned"))
+    fig.add_trace(go.Box(y=rf_results_y, x=x, name="RF default"))
 
-# Gradient Boosting Results
-gb_results_y = binary_results["gradient_boosting"]["untuned"]["scores"] + \
-               binary_results_subset["gradient_boosting"]["untuned"]["scores"] + \
-               multiclass_result["gradient_boosting"]["untuned"]["scores"] + \
-               regression_result["gradient_boosting"]["untuned"]["scores"] + \
-               regression_result_subset["gradient_boosting"]["untuned"]["scores"]
+    rf_results_tuned_y = binary_results["random_forest"]["tuned"]["scores"] + \
+                         multiclass_result["random_forest"]["tuned"]["scores"] + \
+                         regression_result["random_forest"]["tuned"]["scores"]
 
-fig.add_trace(go.Box(y=gb_results_y, x=x, name="GB default"))
+    fig.add_trace(go.Box(y=rf_results_tuned_y, x=x, name="RF tuned"))
 
-gb_results_tuned_y = binary_results["gradient_boosting"]["tuned"]["scores"] + \
-                     binary_results_subset["gradient_boosting"]["tuned"]["scores"] + \
-                     multiclass_result["gradient_boosting"]["tuned"]["scores"] + \
-                     regression_result["gradient_boosting"]["tuned"]["scores"] + \
-                     regression_result_subset["gradient_boosting"]["tuned"]["scores"]
+    # Gradient Boosting Results
+    gb_results_y = binary_results["gradient_boosting"]["untuned"]["scores"] + \
+                   multiclass_result["gradient_boosting"]["untuned"]["scores"] + \
+                   regression_result["gradient_boosting"]["untuned"]["scores"]
 
-fig.add_trace(go.Box(y=gb_results_tuned_y, x=x, name="GB tuned"))
+    fig.add_trace(go.Box(y=gb_results_y, x=x, name="GB default"))
 
-fig.add_trace(go.Box(y=regression_result["elastic_net"]["tuned"]["scores"] +
-                       regression_result_subset["elastic_net"]["tuned"]["scores"],
-                     x=["Regression" for i in range(50)] + ["Regression (subset)" for i in range(50)],
-                     name="ElasticNet Tuned"))
+    gb_results_tuned_y = binary_results["gradient_boosting"]["tuned"]["scores"] + \
+                         multiclass_result["gradient_boosting"]["tuned"]["scores"] + \
+                         regression_result["gradient_boosting"]["tuned"]["scores"]
 
-fig.add_trace(go.Box(y=regression_result["elastic_net"]["untuned"]["scores"] +
-                       regression_result_subset["elastic_net"]["untuned"]["scores"],
-                     x=["Regression" for i in range(50)] + ["Regression (subset)" for i in range(50)],
-                     name="ElasticNet"))
+    fig.add_trace(go.Box(y=gb_results_tuned_y, x=x, name="GB tuned"))
 
-fig.update_layout(
-    title="Model Performance",
-    title_x=0.5,
-    yaxis_title="Accuracy/R^2",
-    boxmode='group'
-)
 
-# fig.show()
+    gb_results_y = binary_results["linear_models"]["untuned"]["scores"] + \
+                   multiclass_result["linear_models"]["untuned"]["scores"] + \
+                   regression_result["linear_models"]["untuned"]["scores"]
+
+    fig.add_trace(go.Box(y=gb_results_y, x=x, name="Linear Model default"))
+
+    gb_results_tuned_y = binary_results["linear_models"]["tuned"]["scores"] + \
+                         multiclass_result["linear_models"]["tuned"]["scores"] + \
+                         regression_result["linear_models"]["tuned"]["scores"]
+
+    fig.add_trace(go.Box(y=gb_results_tuned_y, x=x, name="Linear Model tuned"))
+
+
+    fig.update_layout(
+        title="Model Performance",
+        title_x=0.5,
+        yaxis_title="Accuracy/R²-Score",
+        boxmode='group',
+        font_size=22
+
+    )
+
+    fig.show()
+    fig.write_image("model_performance.png", width=2000, height=1000)
+
+if __name__ == '__main__':
+    # plot_model_results()
+    print_summary_statistics(multiclass_result)

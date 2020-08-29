@@ -1,19 +1,92 @@
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
-from sklearn.metrics import roc_curve, auc, r2_score
-from sklearn.model_selection import train_test_split
-from catboost import CatBoostClassifier, CatBoostRegressor, Pool
-import shap
-from sklearn.metrics import accuracy_score
 from analysis import *
-from catboost.utils import get_roc_curve, get_confusion_matrix
+from catboost import CatBoostClassifier, CatBoostRegressor, Pool
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+from util import detect_prediction_type, find_variables
 
 
-def gradient_boosted_trees(data, target, excluded_variables=[], prediction_type=None,
-                            cv=True, cv_params=None, display=True, shap=True, prepare_data=True):
-    # TODO create pool based on scaled numerical variables and categorical variables
-    pass
+def gradient_boosted_trees(data, target, excluded_variables=[], prediction_type=None, iterations=100, lr=1,
+                           l2_leaf_reg=3, depth=8, cv=True, cv_params=None, display=True, shap=True,
+                           test_indices=None, score=False):
+
+    train_data = data.copy()
+    targ = data[target].copy()
+    train_data = train_data.drop(target, axis=1)
+    train_data = train_data.drop(columns=excluded_variables)
+
+    train_data = train_data[train_data.columns[train_data.isnull().mean() < 0.5]]
+    high_cardinality_variables = []
+    for col in train_data.columns:
+        if not pd.api.types.is_numeric_dtype(train_data[col]):
+            n_unique = len(train_data[col].unique())
+            if float(n_unique) / len(train_data[col][train_data[col].notnull()]) >= 0.75:
+                high_cardinality_variables.append(col)
+
+    print("removed: ", high_cardinality_variables)
+    train_data = train_data.drop(high_cardinality_variables, axis=1)
+    num_vars, cat_vars = find_variables(train_data, display=False)
+    train_data : pd.DataFrame = train_data[targ.notnull()]
+    targ = targ[targ.notnull()]
+
+    # convert numerical variables to float
+    for col in num_vars:
+        train_data[col] = train_data[col].astype(float)
+    # convert categorical variables to object
+    for col in cat_vars:
+        train_data[col] = train_data[col].fillna("NA")
+        train_data[col] = train_data[col].astype("object")
+
+    # Split data into training and test set, either based on given test indices or randomly
+    if test_indices:
+        train_ind = list(set(train_data.index).difference(test_indices))
+        x_test = train_data.iloc[test_indices, :]
+        x_train = train_data.iloc[train_ind, :]
+        y_test = targ.iloc[test_indices, :]
+        y_train = targ.iloc[train_ind, :]
+    else:
+        x_train, x_test, y_train, y_test = train_test_split(train_data, targ, test_size=0.2)
+
+    if prediction_type:
+        model_subtype = prediction_type
+    else:
+        model_subtype = detect_prediction_type(data, target)
+
+    if model_subtype == "regression":
+        pred = CatBoostRegressor(iterations=iterations, learning_rate=lr, l2_leaf_reg=l2_leaf_reg, depth=depth,
+                                 cat_features=cat_vars)
+        y_train = y_train.astype(float)
+        y_test = y_test.astype(float)
+    else:
+        pred = CatBoostClassifier(iterations=iterations, learning_rate=lr, l2_leaf_reg=l2_leaf_reg, depth=depth,
+                                  cat_features=cat_vars)
+        y_train = y_train.astype(str)
+        y_test = y_test.astype(str)
+
+    if cv:
+        if not cv_params:
+            cv_params = {
+                "iterations": [40, 60, 100],
+                "learning_rate": [0.01, 0.1, 1],
+                "depth": [4, 8, 10],
+                "l2_leaf_reg": [3, 5, 9],
+
+            }
+        pred.grid_search(cv_params, x_train, y_train)
+    else:
+        pred.fit(x_train, y_train)
+
+    if display:
+        display_model_performance(pred, model_subtype, x_test, y_test, target)
+        shap_values = display_feature_importances(pred, x_train, x_test, model_type="tree", return_shap=shap)
+    else:
+        print(f"Score: {pred.score(x_test, y_test)}")
+    if shap:
+        return pred, shap_values
+    if score:
+        return pred, pred.score(x_test, y_test)
+    return pred
+
 
 
 
@@ -256,92 +329,20 @@ def create_boost_training_data(data, excluded_numerical_columns, excluded_catego
     return train_pool, test_pool, x_train, y_train, y_test
 
 
-def plot_regression_results(x, pred_y, y, target):
-    """
-    Plot the results of a regression analysis
-    :param x:
-    :type x:
-    :param pred_y:
-    :type pred_y:
-    :param y:
-    :type y:
-    :return:
-    :rtype:
-    """
-    fig_pred = go.Figure()
-    fig_pred.add_trace(go.Scatter(x=list(x), y=pred_y, name=f"Predicted {target}", mode="markers+lines"))
-    fig_pred.add_trace(go.Scatter(x=list(x), y=y, name=f"True {target}", mode="markers+lines"))
-
-    fig_pred.update_layout(
-        title="Predictions of Regression Model compared to true Values in held out test set",
-        xaxis_title="Patients",
-        yaxis_title=f"{target}",
-        font={
-            "family": "Courier New, monospace",
-            "size": 18}
-    )
-    fig_pred.show()
-
-    fig_perf = go.Figure()
-    y_pred_scaled = pred_y / np.linalg.norm(pred_y)
-    y_scaled = y / np.linalg.norm(y)
-    fig_perf.add_trace(go.Scatter(x=y_pred_scaled, y=y_scaled, mode="markers"))
-    fig_perf.add_trace(go.Scatter(x=[0, 1], y=[0, 1], mode='lines'))
-
-    fig_perf.update_layout(
-        title="Prediction Performance of Regression",
-        xaxis_title=f"Predicted {target}",
-        yaxis_title=f"True {target}",
-        font={
-            "family": "Courier New, monospace",
-            "size": 18},
-    )
-    fig_perf.show()
-
-
-def plot_confusion_matrix(cm, classes=None):
-    """
-    Plot a confusion matrix for a multi label classification case
-    :param cm:
-    :type cm:
-    :param classes:
-    :type classes:
-    :return:
-    :rtype:
-    """
-    accuracy = cm / np.sum(cm, axis=0)
-    fig = go.Figure(
-        data=go.Heatmap(
-            z=accuracy,
-            x=[f"Class {i}" for i in range(len(cm))],
-            y=[f"Class {i}" for i in range(len(cm))]
-
-        )
-    )
-    fig.show()
 
 
 if __name__ == '__main__':
-    df_sars = load_data(
-        "C:\\hypothesis\\repositories\\server\\walzLabBackend\\notebook\\15052020SARS-CoV-2_final.xlsx",
-        two_sheets=False)
-    excluded_categorical_columns = ['Patienten-ID', 'III.4b: wenn ja, seit wann(Datum)?',
-                                    'III.2Wann wurde der Abstrich durchgeführt(Datum)?', "Eingabedatum",
-                                    'III.18: Bis ungefähr wann hatten Sie Symptome(Datum)?']
-    excluded_numerical_columns = ["VII.1B: OD IgG Spike 1 Protein rekombinant",
-                                  "VII.1C: OD IgG Nucleocapsid Protein rekombinant",
-                                  "VIII.1A: Bewertung IgG RBD Peptid rekombinant",
-                                  "VIII.1C: Bewertung IgG Nucleocapsid Protein rekombinant",
-                                  "SARS-COV-2 IgG Euroimmun",
-                                  "VIII.1B: Bewertung IgG Spike 1 Protein rekombinant",
-                                  "SARS-CoV-2 IgG Euroimmun"]
-    numerical_columns, categorical_columns = find_variables(df_sars,
-                                                            excluded_categorical_columns,
-                                                            excluded_numerical_columns,
-                                                            min_available=20)
+    df_sars = load_data("walz_data.csv")
+
+    excluded_variables = ['Patienten-ID']
+
+
+
+    print("gradient boosting main")
+    binary_target = "Überhaput Antikörperantwort 0=nein"
+    multi_target = "III.6: Haben Sie sich krank gefühlt?"
+    # df_sars[multi_target] = df_sars[multi_target].astype("category")
     regr_target = "VII.1A: OD IgG RBD Peptid rekombinant"
-    gradient_boosting_regressor(df_sars, excluded_numerical_columns, excluded_categorical_columns, regr_target,
-                                tune_parameters=False)
-    # gradient_boosting_classifier(df_sars, excluded_numerical_columns, excluded_categorical_columns,
-    #                              "IX.1C HLA",
-    #                              tune_parameters=True)
+
+
+    gradient_boosted_trees(df_sars, regr_target, excluded_variables=excluded_variables, cv=False)

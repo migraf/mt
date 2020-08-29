@@ -1,5 +1,7 @@
 from sklearn.svm import SVC, SVR
 from analysis import *
+from util import detect_prediction_type, cross_validation_tuning
+
 
 def svm(data, target, excluded_variables=[], prediction_type=None, kernel='rbf', C=1.0, degree=3,
                  cv=True, cv_params=None, display=True, shap=True, prepare_data=True):
@@ -15,7 +17,7 @@ def svm(data, target, excluded_variables=[], prediction_type=None, kernel='rbf',
     else:
         x_train, x_test = data[0], data[1]
         y_train, y_test = target[0], target[1]
-    print(f"Creating a linear {model_subtype} model")
+    print(f"Creating a svm {model_subtype} model")
     if model_subtype in ["binary", "multi-class"]:
         pred = SVC(kernel=kernel, C=C, degree=degree, probability=True)
         y_train = y_train.astype("str")
@@ -41,18 +43,18 @@ def svm(data, target, excluded_variables=[], prediction_type=None, kernel='rbf',
     else:
         pred.fit(x_train, y_train)
 
-        if display:
-            display_model_performance(pred, model_subtype, x_test, y_test, target)
-            if model_subtype is not "regression":
-                shap_values = display_feature_importances(pred.predict_proba, x_train, x_test, return_shap=shap)
-            else:
-                shap_values = display_feature_importances(pred, x_train, x_test, return_shap=shap)
+    if display:
+        display_model_performance(pred, model_subtype, x_test, y_test, target)
+        if model_subtype != "regression":
+            shap_values = display_feature_importances(pred.predict_proba, x_train, x_test, return_shap=shap)
         else:
-            print(f"Score: {pred.score(x_test, y_test)}")
-            # TODO print additional information
-        if shap:
-            return pred, shap_values
-        return pred
+            shap_values = display_feature_importances(pred, x_train, x_test, return_shap=shap)
+    else:
+        print(f"Score: {pred.score(x_test, y_test)}")
+        # TODO print additional information
+    if shap:
+        return pred, shap_values
+    return pred
 
 
 

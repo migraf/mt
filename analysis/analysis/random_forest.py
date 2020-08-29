@@ -6,6 +6,7 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import label_binarize
 import plotly.graph_objects as go
 from analysis import *
+from util import detect_prediction_type, cross_validation_tuning
 
 
 def random_forest(data, target, excluded_variables=[], prediction_type=None, n_estimators=100, criterion=None,
@@ -50,8 +51,8 @@ def random_forest(data, target, excluded_variables=[], prediction_type=None, n_e
     if cv:
         if not cv_params:
             cv_params = {
-                "n_estimators": [10, 100, 1000],
-                "max_depth": [None, 4, 6, 8],
+                "n_estimators": [10, 100, 500],
+                "max_depth": [None, 6, 8],
                 "max_features": [None, "auto", "log2"],
                 "min_samples_leaf": [1, 5, 10]
             }
@@ -192,4 +193,4 @@ if __name__ == '__main__':
 
     # random_forest_classifier(df_sars, num_columns, cat_columns, target)
     # random_forest_regressor(df_sars, num_columns, cat_columns, regr_target)
-    pred, shap = random_forest(df_sars, regr_target, cv=False, shap=True)
+    pred, shap = random_forest(df_sars, binary_target, cv=True, shap=True)

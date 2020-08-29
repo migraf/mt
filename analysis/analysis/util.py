@@ -54,7 +54,7 @@ def create_cluster_data(df, num_cols, cat_cols):
 
 
 def create_training_data(data, target_var=None, excluded_variables=[], test_train_split=True, test_size=0.2,
-                         min_available=0.5, imputer="simple", n_neighbors=5):
+                         min_available=0.5, imputer="simple", n_neighbors=5, test_train_indices=False):
     """
     Split the given data frame into train/test/val split and process the data, to fit to the selected algorithm type
     :param na_strategy: how to handle nan values, in target column either drop or fill
@@ -64,19 +64,6 @@ def create_training_data(data, target_var=None, excluded_variables=[], test_trai
     :return:
     :rtype:
     """
-
-    # # Remove target from data initially
-    # cat_cols_copy = cat_cols.copy()
-    # num_cols_copy = num_cols.copy()
-    # if target_col in cat_cols_copy:
-    #     if target_col:
-    #         target = data[target_col].copy()
-    #         cat_cols_copy.remove(target_col)
-    # else:
-    #     if target_col:
-    #         num_cols_copy.remove(target_col)
-    #         target = data[target_col].copy()
-    #         target = target.astype(float)
     train_data = data.copy()
     if target_var:
         target = data[target_var].copy()
@@ -123,12 +110,17 @@ def create_training_data(data, target_var=None, excluded_variables=[], test_trai
         train_data = train_data[target.notnull()]
         target = target[target.notnull()]
     train_data = train_data.fillna(method="pad", axis="columns")
-
+    # TODO add option to return indices
     if not target_var:
         return train_data
     elif test_train_split:
-        x_train, x_test, y_train, y_test = train_test_split(train_data, target, test_size=test_size)
-        return x_train, x_test, y_train, y_test
+        if not test_train_indices:
+            x_train, x_test, y_train, y_test = train_test_split(train_data, target, test_size=test_size)
+            return x_train, x_test, y_train, y_test
+        else:
+            x_train, x_test, y_train, y_test, x_ind, y_ind = train_test_split(train_data, target, range(len(target)),
+                                                                              test_size=test_size)
+            return x_train, x_test, y_train, y_test, x_ind, y_ind
     else:
         return train_data, target
 
@@ -163,20 +155,7 @@ def find_variables(data, display=False):
         print("\n")
         print("Included categorical variables:\n\n", categorical_columns)
     return numerical_columns, categorical_columns
-    #
-    # for col in data.columns:
-    #     if data[col].dtype in ["float64", "Int64"]:
-    #         if col not in excluded_numeric:
-    #             n_available = np.sum(data[col].notnull())
-    #             # dont include variables with less than the desired number of entries
-    #             if n_available >= min_available:
-    #                 numerical_columns.append(col)
-    #     elif data[col].dtype in ["object", "string", "category"]:
-    #         if col not in excluded_categorical:
-    #             n_available = np.sum(data[col].notnull())
-    #             # dont include variables with less than the desired number of entries
-    #             if n_available >= min_available:
-    #                 categorical_columns.append(col)
+
 
 
 def detect_prediction_type(data, target):
@@ -265,7 +244,7 @@ def reduce_dims(data, dims=3, reduction_algorithm="tsne", prepare_data=False, di
             fig = px.scatter_3d(x=list(embedded[:, 0]),
                                 y=list(embedded[:, 1]),
                                 z=list(embedded[:, 2]),
-                            )
+                                )
             fig.update_layout(showlegend=False)
             fig.update_traces(marker=dict(size=8))
             fig.show()
@@ -287,7 +266,7 @@ def cross_validation_tuning(estimator, param_grid, data, target):
     :rtype:
     """
     # TODO implement random seach cross validation as an option
-    grid_search = GridSearchCV(estimator, param_grid=param_grid)
+    grid_search = GridSearchCV(estimator, param_grid=param_grid, verbose=True, n_jobs=-1)
     grid_search.fit(data, target)
 
     return grid_search.best_estimator_, grid_search.cv_results_, grid_search.best_params_
@@ -302,8 +281,6 @@ def create_data_summary(df, dict, filenname="data_overview.csv"):
     overview.to_csv(filenname)
 
 
-
-
 if __name__ == '__main__':
     df = load_data("walz_data.csv")
     training_data = create_training_data(df)
@@ -311,6 +288,6 @@ if __name__ == '__main__':
     algs = ["tsne", "pca", "isomap"]
 
     for alg in algs:
-        for dim in [2,3]:
-            reduce_dims(training_data, dims=dim, reduction_algorithm=alg, tsne_lr=10, tsne_perp=50, max_iter= 10000,
+        for dim in [2, 3]:
+            reduce_dims(training_data, dims=dim, reduction_algorithm=alg, tsne_lr=10, tsne_perp=50, max_iter=10000,
                         display=True)
