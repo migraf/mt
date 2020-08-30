@@ -1,16 +1,9 @@
 import pandas as pd
 import numpy as np
-import sklearn
-
-from timeit import default_timer as timer
+from util import create_training_data, reduce_dims, load_data
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 from sklearn.mixture import GaussianMixture, BayesianGaussianMixture
-from sklearn.manifold import TSNE
-import plotly.express as px
 import plotly.graph_objects as go
-from analysis import *
-import umap
 import hdbscan
 import scipy.stats as ss
 import itertools
@@ -324,7 +317,7 @@ def extract_clusters(df, clusters, selected_clusters=None, save=True):
 
 
 if __name__ == '__main__':
-    df_sars = load_data("walz_data.csv")
+    df_sars = load_data("../../datasets/walz_data.csv", na_values=["<NA>"])
 
     # clusters = k_means_cluster(df_sars, n_clusters=3, prepare_data=True, dims=2, evaluate_clusters=False)
     # print(clusters)

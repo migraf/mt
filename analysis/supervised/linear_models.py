@@ -1,21 +1,10 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import ElasticNet, ElasticNetCV, LinearRegression, LogisticRegression
-from sklearn.preprocessing import normalize
-# from process_data import load_data
-# from util import *
-import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+from util import detect_prediction_type, create_training_data, cross_validation_tuning, load_data
+from display import display_model_performance, display_feature_importances
 
-# # from analysis import create_training_data, find_variables
-# from .util import create_training_data, find_variables
-# import shap
-#
-# from .process_data import load_data
-
-from analysis import *
-
-from util import detect_prediction_type, cross_validation_tuning
 
 
 def linear_model(data, target, excluded_variables=[], prediction_type=None, l1_ratio=0.2, max_iter=1000,
@@ -25,8 +14,6 @@ def linear_model(data, target, excluded_variables=[], prediction_type=None, l1_r
     else:
         model_subtype = detect_prediction_type(data, target)
 
-    # Create fitting predictor
-    from analysis.analysis import create_training_data
     if prepare_data:
         x_train, x_test, y_train, y_test = create_training_data(data, target, excluded_variables)
     else:
@@ -224,7 +211,7 @@ def elastic_net(data=None, num_cols=None, cat_cols=None, target=None, train_data
 
 
 if __name__ == '__main__':
-    df_sars = load_data("walz_data.csv", na_values=["<NA>"])
+    df_sars = load_data("../../datasets/walz_data.csv", na_values=["<NA>"])
 
     excluded_variables = ['Patienten-ID']
 

@@ -7,7 +7,6 @@ from sklearn.impute import SimpleImputer, KNNImputer
 from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 import numpy as np
-from analysis import *
 from sklearn.preprocessing import StandardScaler
 from pandas.api.types import is_numeric_dtype
 import plotly.express as px

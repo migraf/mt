@@ -1,9 +1,11 @@
-from analysis import *
+import shap
 from catboost import CatBoostClassifier, CatBoostRegressor, Pool
+from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 import pandas as pd
+from util import find_variables, detect_prediction_type, load_data
+from display import display_model_performance, display_feature_importances
 
-from util import detect_prediction_type, find_variables
 
 
 def gradient_boosted_trees(data, target, excluded_variables=[], prediction_type=None, iterations=100, lr=1,
@@ -334,7 +336,7 @@ def create_boost_training_data(data, excluded_numerical_columns, excluded_catego
 
 
 if __name__ == '__main__':
-    df_sars = load_data("walz_data.csv")
+    df_sars = load_data("../../datasets/walz_data.csv", na_values=["<NA>"])
 
     excluded_variables = ['Patienten-ID']
 

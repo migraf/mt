@@ -1,6 +1,6 @@
 from sklearn.svm import SVC, SVR
-from analysis import *
-from util import detect_prediction_type, cross_validation_tuning
+from util import detect_prediction_type, create_training_data, cross_validation_tuning, load_data
+from display import display_model_performance, display_feature_importances
 
 
 def svm(data, target, excluded_variables=[], prediction_type=None, kernel='rbf', C=1.0, degree=3,
@@ -10,8 +10,6 @@ def svm(data, target, excluded_variables=[], prediction_type=None, kernel='rbf',
     else:
         model_subtype = detect_prediction_type(data, target)
 
-    # Create fitting predictor
-    from analysis.analysis import create_training_data
     if prepare_data:
         x_train, x_test, y_train, y_test = create_training_data(data, target, excluded_variables)
     else:

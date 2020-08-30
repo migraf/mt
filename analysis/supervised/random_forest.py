@@ -1,12 +1,9 @@
-import pandas as pd
 import numpy as np
-
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.metrics import roc_curve, auc
-from sklearn.preprocessing import label_binarize
 import plotly.graph_objects as go
-from analysis import *
-from util import detect_prediction_type, cross_validation_tuning
+from analysis import detect_prediction_type, create_training_data, cross_validation_tuning, load_data
+from display import display_model_performance, display_feature_importances
 
 
 def random_forest(data, target, excluded_variables=[], prediction_type=None, n_estimators=100, criterion=None,
@@ -17,8 +14,6 @@ def random_forest(data, target, excluded_variables=[], prediction_type=None, n_e
     else:
         model_subtype = detect_prediction_type(data, target)
 
-    # Create fitting predictor
-    from analysis.analysis import create_training_data
     if prepare_data:
         x_train, x_test, y_train, y_test = create_training_data(data, target, excluded_variables)
     else:
@@ -181,7 +176,7 @@ def plot_feature_importances(df, feature_importances, n_features=10):
 
 
 if __name__ == '__main__':
-    df_sars = load_data("walz_data.csv", na_values=["<NA>"])
+    df_sars = load_data("../../datasets/walz_data.csv", na_values=["<NA>"])
 
     # excluded_variables = ['Patienten-ID']
     excluded_variables = ['Patienten-ID', "VII.1B: OD IgG Spike 1 Protein rekombinant",

@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from analysis import *
 import textwrap
 import plotly.express as px
 import statsmodels.api as sm
+from statistics import numerical_correlation
 
 
 def grouped_box_plot(data, cat_col, num_cols, title=None, y_title=None, x_title=None, points=True):

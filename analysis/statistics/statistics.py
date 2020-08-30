@@ -324,19 +324,19 @@ def test_battery(data, variables, save=True):
 
         output += f"{var1} vs {var2}\n"
         # compare two categorical variables
-        if data[var1].dtype == "object" and data[var2].dtype == "object":
+        if not is_numeric_dtype(data[var1]) and not is_numeric_dtype(data[var2]):
             output += f"\tTest: Chi2 Goodness of Fit:\n"
             chi2, chi_p, dof = chi_2(data, var1, var2)
             output += f"\tChi2: {chi2}, p-Value: {chi_p}, DoF: {dof}\n"
 
-        elif data[var1].dtype == "object" and data[var2].dtype == "float":
+        elif not is_numeric_dtype(data[var1]) and is_numeric_dtype(data[var2]):
             output += kruskal_wallis(data, var1, var2, notebook=False)
 
-        elif data[var1].dtype == "float" and data[var2].dtype == "object":
+        elif is_numeric_dtype(data[var1]) and not is_numeric_dtype(data[var2]):
 
             output += kruskal_wallis(data, var2, var1)
         # If both variables are continuous calculate correlations
-        elif data[var1].dtype == "float" and data[var2].dtype == "float":
+        elif is_numeric_dtype(data[var1]) and is_numeric_dtype(data[var2]):
             output += numerical_correlation(data, var1, var2)
         output += "\n"
     # Save as file if desired
