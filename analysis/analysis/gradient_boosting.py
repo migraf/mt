@@ -63,6 +63,8 @@ def gradient_boosted_trees(data, target, excluded_variables=[], prediction_type=
         y_train = y_train.astype(str)
         y_test = y_test.astype(str)
 
+    train_pool = Pool(x_train, y_train, cat_features=cat_vars)
+    test_pool = Pool(x_test, y_test, cat_features=cat_vars)
     if cv:
         if not cv_params:
             cv_params = {

@@ -160,7 +160,6 @@ def plot_regression_results(x, y, pred_y, target, score, save=True):
 
     # Fit regression line into model predictions
     fitted_line = sm.OLS(pred_y, sm.add_constant(y)).fit().fittedvalues
-    print(fitted_line)
 
     fig_reg = go.Figure()
     fig_reg.add_trace(go.Scatter(x=y, y=pred_y, mode="markers", name="Predicted vs True"))

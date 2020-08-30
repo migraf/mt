@@ -27,7 +27,12 @@ def evaluate_models():
 
     data = load_data("walz_data.csv", na_values=["<NA>"])
 
-    excluded_variables = ['Patienten-ID']
+    excluded_variables = ['Patienten-ID', "VII.1B: OD IgG Spike 1 Protein rekombinant",
+                          "VII.1C: OD IgG Nucleocapsid Protein rekombinant",
+                          "VIII.1A: Bewertung IgG RBD Peptid rekombinant",
+                          "SARS-CoV-2 IgG Euroimmun",
+                          "VIII.1B: Bewertung IgG Spike 1 Protein rekombinant"
+                          ]
 
     binary_target = "Überhaput Antikörperantwort 0=nein"
     multi_target = "III.6: Haben Sie sich krank gefühlt?"
@@ -55,12 +60,12 @@ def evaluate_models():
     lm_tuned_scores = []
     lm_tuned_params = []
 
-    prediction_type = "multi-class"
+    prediction_type = "regression"
 
     for i in range(n_evaluation_runs):
         # Track total run time
         evaluation_start = time()
-        x_train, x_test, y_train, y_test, ind_train, ind_test = create_training_data(data, multi_target,
+        x_train, x_test, y_train, y_test, ind_train, ind_test = create_training_data(data, regr_target,
                                                                                      excluded_variables=excluded_variables,
                                                                                      test_train_indices=True)
         y_test = y_test.astype(str)
@@ -111,16 +116,16 @@ def evaluate_models():
         # Gradient Boosting Evaluation
         print("Catboost Model:")
         cb_start_time = time()
-        gb_clf, gb_score = gradient_boosted_trees(data, multi_target, cv=False, display=False,
-                                                  shap=False,
+        gb_clf, gb_score = gradient_boosted_trees(data, regr_target, cv=False, display=False,
+                                                  shap=False, excluded_variables=excluded_variables,
                                                   prediction_type=prediction_type, score=True)
         cb_untuned_times.append(time() - cb_start_time)
         cb_scores.append(gb_score)
         print(f"\tCB training finished - Score: {gb_score}, Time: {cb_untuned_times[i]}")
         print("CV Tuning Catboost Model:")
         cb_tuning_start_time = time()
-        gb_clf, cb_score = gradient_boosted_trees(data, multi_target, cv=True, display=False,
-                                                  shap=False,
+        gb_clf, cb_score = gradient_boosted_trees(data, regr_target, cv=True, display=False,
+                                                  shap=False, excluded_variables=excluded_variables,
                                                   prediction_type=prediction_type, score=True)
         cb_tuned_times.append(time() - cb_tuning_start_time)
         cb_tuned_scores.append(cb_score)
@@ -180,7 +185,7 @@ def evaluate_models():
     # results["linear_models"]["tuned"]["params"] = elastic_tuned_params
 
     # Store results in file
-    with open("../../results/multiclass_results.json", "w") as f:
+    with open("../../results/regression_results_subset.json", "w") as f:
         json.dump(results, f, indent=4)
 
 

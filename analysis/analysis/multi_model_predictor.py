@@ -29,22 +29,48 @@ def multi_model_predictor(data, target, excluded_variables=[], prediction_type=N
     print("Training models")
     lin_m = linear_model([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=display,
                          shap=shap, prepare_data=False, **linear_model_params)
-    lm_score = lin_m.score(x_test, y_test)
-    print(f"Linear model score: {lm_score}")
+
     svm_m = svm([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=display,
                 shap=shap, prepare_data=False, **svm_params)
 
     rf_m = random_forest([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=display,
                          shap=shap, prepare_data=False, **random_forest_params)
 
-    # TODO change input data
-    gb_m = gradient_boosted_trees([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv,
-                                  display=display, shap=shap, prepare_data=False, **gradient_boosting_params,
-                                  test_indices=test_ind)
+    gb_m, gb_m_score = gradient_boosted_trees(data=data, target=target, prediction_type=model_subtype, cv=cv,
+                                              display=display, shap=shap, **gradient_boosting_params,
+                                              score=True)
+    # Display scores
     lm_score = lin_m.score(x_test, y_test)
     print(f"Linear model score: {lm_score}")
 
-    # evaluate models
+    rf_score = rf_m.score(x_test, y_test)
+    print(f"Random forest model score: {rf_score}")
+
+    svm_score = svm_m.score(x_test, y_test)
+    print(f"SVM model score: {svm_score}")
+
+    print(f"Catboost model score: {gb_m_score}")
+
+    model_results = {
+        "linear_model": {
+            "score": lm_score,
+            "predictor": lin_m
+        },
+        "svm": {
+            "score": svm_score,
+            "predictor": svm_m
+        },
+        "random_forest": {
+            "score": rf_score,
+            "predictor": rf_m
+        },
+        "catboost": {
+            "score": gb_m_score,
+            "predictor": gb_m
+        }
+    }
+
+
 
 
 class MultiModelPredictor:

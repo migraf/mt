@@ -183,7 +183,13 @@ def plot_feature_importances(df, feature_importances, n_features=10):
 if __name__ == '__main__':
     df_sars = load_data("walz_data.csv", na_values=["<NA>"])
 
-    excluded_variables = ['Patienten-ID']
+    # excluded_variables = ['Patienten-ID']
+    excluded_variables = ['Patienten-ID', "VII.1B: OD IgG Spike 1 Protein rekombinant",
+                          "VII.1C: OD IgG Nucleocapsid Protein rekombinant",
+                          "VIII.1A: Bewertung IgG RBD Peptid rekombinant",
+                          "SARS-CoV-2 IgG Euroimmun",
+                          "VIII.1B: Bewertung IgG Spike 1 Protein rekombinant"
+                          ]
 
     print("Random forest main")
     binary_target = "Überhaput Antikörperantwort 0=nein"
@@ -193,4 +199,4 @@ if __name__ == '__main__':
 
     # random_forest_classifier(df_sars, num_columns, cat_columns, target)
     # random_forest_regressor(df_sars, num_columns, cat_columns, regr_target)
-    pred, shap = random_forest(df_sars, binary_target, cv=True, shap=True)
+    pred, shap = random_forest(df_sars, regr_target, excluded_variables=excluded_variables, cv=False, shap=True)

@@ -11,6 +11,9 @@ with open("../../results/multiclass_results.json", "r") as br:
 with open("../../results/regression_results.json", "r") as br:
     regression_result = json.load(br)
 
+with open("../../results/regression_results_subset.json", "r") as br:
+    regression_result_subset = json.load(br)
+
 def print_summary_statistics(results):
     # Calculate Performance statistics
     svm_acc = np.mean(results["svm"]["untuned"]["scores"])
@@ -144,4 +147,4 @@ def plot_model_results():
 
 if __name__ == '__main__':
     # plot_model_results()
-    print_summary_statistics(multiclass_result)
+    print_summary_statistics(regression_result_subset)

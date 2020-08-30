@@ -171,6 +171,16 @@ def regression_scatter_matrix(data, variables):
 
 
 def parallel_coordinates_plot(data, variables, group_var=None):
+    """
+    Create a parallel coordinates plot based on a given dataframe and a list of variable names
+    Args:
+        data: dataframe containing the data
+        variables: list of variable names
+        group_var: variable name to set the color scales for the created lines
+
+    Returns:
+
+    """
 
     # Remove na values
     plot_data_vars = variables.copy() + [group_var]
