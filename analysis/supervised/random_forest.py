@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.metrics import roc_curve, auc
 import plotly.graph_objects as go
-from analysis import detect_prediction_type, create_training_data, cross_validation_tuning, load_data
+from util import detect_prediction_type, create_training_data, cross_validation_tuning, load_data
 from display import display_model_performance, display_feature_importances
 
 

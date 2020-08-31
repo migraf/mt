@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import scipy.stats as ss
-from analysis import *
 from collections import Counter
 import scikit_posthocs as sp
 from itertools import combinations

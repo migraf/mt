@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import textwrap
 import plotly.express as px
 import statsmodels.api as sm
-from statistics import numerical_correlation
+import statistics
 
 
 def grouped_box_plot(data, cat_col, num_cols, title=None, y_title=None, x_title=None, points=True):
@@ -93,7 +93,7 @@ def scatter_correlation_plot(data, var1, var2):
     fitted_line = sm.OLS(list(y), sm.add_constant(list(x))).fit().fittedvalues
     fig.add_trace(go.Scatter(x=x, y=fitted_line, line=dict(color="red"), showlegend=False))
 
-    stat, p = numerical_correlation(data, var1, var2, values=True)
+    stat, p = statistics.numerical_correlation(data, var1, var2, values=True)
     if p < 0.0001:
         p = "0.0000"
     else:

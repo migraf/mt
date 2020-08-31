@@ -1,8 +1,10 @@
 import catboost
-from analysis import *
 import plotly.graph_objects as go
 from scipy import stats
 from time import time
+from supervised import linear_model, svm, random_forest, gradient_boosted_trees
+from util import detect_prediction_type, create_training_data, load_data
+from display import display_model_performance, display_feature_importances
 
 
 def multi_model_predictor(data, target, excluded_variables=[], prediction_type=None, linear_model_params=None,
@@ -13,8 +15,6 @@ def multi_model_predictor(data, target, excluded_variables=[], prediction_type=N
     else:
         model_subtype = detect_prediction_type(data, target)
 
-    # Create training data
-    from analysis.analysis import create_training_data
     if prepare_data:
         x_train, x_test, y_train, y_test, train_ind, test_ind = create_training_data(data, target, excluded_variables,
                                                                                      test_train_indices=True)
@@ -27,18 +27,34 @@ def multi_model_predictor(data, target, excluded_variables=[], prediction_type=N
 
     # create the models
     print("Training models")
-    lin_m = linear_model([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=display,
-                         shap=shap, prepare_data=False, **linear_model_params)
+    if linear_model_params:
+        lin_m = linear_model([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=False,
+                         shap=False, prepare_data=False, **linear_model_params)
+    else:
+        lin_m = linear_model([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=False,
+                         shap=False, prepare_data=False)
 
-    svm_m = svm([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=display,
-                shap=shap, prepare_data=False, **svm_params)
+    if svm_params:
+        svm_m = svm([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=False,
+                    shap=False, prepare_data=False, **svm_params)
+    else:
+        svm_m = svm([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=False,
+                    shap=False, prepare_data=False)
 
-    rf_m = random_forest([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=display,
-                         shap=shap, prepare_data=False, **random_forest_params)
-
-    gb_m, gb_m_score = gradient_boosted_trees(data=data, target=target, prediction_type=model_subtype, cv=cv,
-                                              display=display, shap=shap, **gradient_boosting_params,
-                                              score=True)
+    if random_forest_params:
+        rf_m = random_forest([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=False,
+                             shap=False, prepare_data=False, **random_forest_params)
+    else:
+        rf_m = random_forest([x_train, x_test], [y_train, y_test], prediction_type=model_subtype, cv=cv, display=False,
+                             shap=False, prepare_data=False)
+    if gradient_boosting_params:
+        gb_m, gb_m_score = gradient_boosted_trees(data=data, target=target, prediction_type=model_subtype, cv=cv,
+                                                  display=False, shap=False, **gradient_boosting_params,
+                                                  score=True)
+    else:
+        gb_m, gb_m_score = gradient_boosted_trees(data=data, target=target, prediction_type=model_subtype, cv=cv,
+                                                  display=False, shap=False,
+                                                  score=True)
     # Display scores
     lm_score = lin_m.score(x_test, y_test)
     print(f"Linear model score: {lm_score}")
@@ -51,24 +67,26 @@ def multi_model_predictor(data, target, excluded_variables=[], prediction_type=N
 
     print(f"Catboost model score: {gb_m_score}")
 
-    model_results = {
-        "linear_model": {
-            "score": lm_score,
-            "predictor": lin_m
-        },
-        "svm": {
-            "score": svm_score,
-            "predictor": svm_m
-        },
-        "random_forest": {
-            "score": rf_score,
-            "predictor": rf_m
-        },
-        "catboost": {
-            "score": gb_m_score,
-            "predictor": gb_m
-        }
-    }
+    models = [("linear_model", lm_score, lin_m), ("random forest", rf_score, rf_m), ("svm", svm_score, svm_m),
+              ("catboost", gb_m_score, gb_m)]
+
+    top_model = sorted(models, key= lambda x: x[1])[-1]
+    print(top_model)
+    top_pred = top_model[2]
+    if display:
+        display_model_performance(top_pred, model_subtype, x_test, y_test, target)
+        if top_model[0] in {"linear_model", "svm"}:
+            if model_subtype == "regression":
+                shap_values = display_feature_importances(top_pred.predict, x_train, x_test, return_shap=shap)
+            else:
+                shap_values = display_feature_importances(top_pred.predict_proba, x_train, x_test, return_shap=shap)
+        else:
+            shap_values = display_feature_importances(top_pred, x_train, x_test, model_type="tree", return_shap=shap)
+    if shap:
+        return top_pred, models, shap_values
+    else:
+        return top_pred, models
+
 
 
 
@@ -238,19 +256,14 @@ class MultiModelPredictor:
 
 
 if __name__ == '__main__':
-    data = load_data("walz_data.csv")
-    print(data.info())
-    excluded_categorical_columns = ['Patienten-ID', 'Eingabedatum', 'III.2Wann wurde der Abstrich durchgeführt(Datum)?',
-                                    'III.4b: wenn ja, seit wann(Datum)?']
-    excluded_numerical_columns = ['Kohorte B']
-    target = "VII.1A: OD IgG RBD Peptid rekombinant"
+    df_sars = load_data("../../datasets/walz_data.csv", na_values=["<NA>"])
 
-    num_columns, cat_columns = find_variables(data,
-                                              excluded_categorical_columns,
-                                              excluded_numerical_columns,
-                                              min_available=20,
-                                              display=True
-                                              )
+    excluded_variables = ['Patienten-ID']
 
-    mmp = MultiModelPredictor(data=data, num_cols=num_columns, cat_cols=cat_columns, target=target)
-    mmp.train_models()
+    print("Linear models main")
+    binary_target = "Überhaput Antikörperantwort 0=nein"
+    multi_target = "III.6: Haben Sie sich krank gefühlt?"
+    # df_sars[multi_target] = df_sars[multi_target].astype("category")
+    regr_target = "VII.1A: OD IgG RBD Peptid rekombinant"
+
+    pred = multi_model_predictor(data=df_sars, target=regr_target, cv=False)

@@ -176,7 +176,7 @@ def detect_prediction_type(data, target):
         else:
             return "regression"
     else:
-        if len(data[target].unique()) == 2:
+        if len(data[target][data[target].notnull()].unique()) == 2:
             return "binary"
         else:
             return "multi-class"
