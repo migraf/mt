@@ -159,7 +159,6 @@ def plot_regression_results(x, y, pred_y, target, score, save=True):
     fig_pred.show()
 
     # Fit regression line into model predictions
-    print(y, pred_y)
     fitted_line = sm.OLS(pred_y, sm.add_constant(y.astype(float))).fit().fittedvalues
 
     fig_reg = go.Figure()

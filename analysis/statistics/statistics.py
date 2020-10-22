@@ -115,6 +115,7 @@ def chi_2(df, col1, col2, notebook=True):
     group_sizes = df.groupby([col1, col2]).size()
     ct_sum = group_sizes.unstack(col1)
     chi2, p, dof, _ = ss.chi2_contingency(ct_sum.fillna(0))
+    print(ct_sum)
     if notebook:
         print(f"Chi2: {chi2}, p-Value: {p}, DoF: {dof}")
     return chi2, p, dof

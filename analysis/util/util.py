@@ -82,7 +82,7 @@ def create_training_data(data, target_var=None, excluded_variables=[], test_trai
             if float(n_unique) / len(train_data[col][train_data[col].notnull()]) >= 0.75:
                 high_cardinality_variables.append(col)
 
-    print(high_cardinality_variables)
+    print(f"Excluded high cardinality variables: {high_cardinality_variables}")
     train_data = train_data.drop(high_cardinality_variables, axis=1)
 
     num_vars, cat_vars = find_variables(train_data, display=False)

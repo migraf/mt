@@ -209,7 +209,6 @@ def perform_test(data, values, variable, type="numeric"):
     :return:
     :rtype:
     """
-    # TODO switch this to be based on underlying data -> removing dummy variables
     if type == "numeric":
         # Check if variable is normally distributed
         ks, shapiro_p = ss.shapiro(data[variable][data[variable].notnull()])
@@ -226,12 +225,22 @@ def perform_test(data, values, variable, type="numeric"):
                 return np.inf, np.inf
     if type == "categorical":
         # TODO calculate contingency matrix and perform chi2 test
-        pass
+        try:
+
+            cont_table = pd.DataFrame(index=data[variable].unique())
+            for ind in range(len(values)):
+                cont_table[ind] = pd.Series(values[ind]).value_counts()
+            cont_table = cont_table.fillna(0)
+            chi2, p, dof, expected = ss.chi2_contingency(cont_table)
+            return chi2, p
+        except ValueError as e:
+            return np.inf, np.inf
+
 
 
 def compare_clusters(data, cluster_dfs, n=20):
     """
-    Compare the details of two patient clusters
+    Compare the details of  patient clusters
     :param data: dataframes the cluster dfs are extracted from
     :param cluster_dfs: list of dataframes containing clustered samples
     :param n: number of most different results to extract
@@ -241,7 +250,6 @@ def compare_clusters(data, cluster_dfs, n=20):
     columns = list(cluster_dfs[0].columns)
     general_anova_results = []
 
-    # TODO handle categorical/dependant variables
     # Get indices of all combination of clusters
     combination_indices = list((i, j) for ((i, _), (j, _)) in itertools.combinations(enumerate(cluster_dfs), 2))
     between_cluster_results = {x: {} for x in range(len(cluster_dfs))}
@@ -251,15 +259,15 @@ def compare_clusters(data, cluster_dfs, n=20):
         if combination[0] not in between_cluster_results[combination[1]].keys():
             between_cluster_results[combination[1]][combination[0]] = []
 
-    print(between_cluster_results)
     for variable in columns:
+        var_type = "numeric" if pd.api.types.is_numeric_dtype(data[variable]) else "categorical"
         # Extract values for each variable
         samples = []
         for df in cluster_dfs:
             if len(list(df[variable])) > 1:
                 samples.append(list(df[variable]))
         # General comparison for the current variable
-        h, p = perform_test(data, samples, variable)
+        h, p = perform_test(data, samples, variable, type=var_type)
         try:
             general_anova_results.append({"variable": variable, "p-Value": p})
         except ValueError:
@@ -273,7 +281,8 @@ def compare_clusters(data, cluster_dfs, n=20):
             bet_h, bet_p = perform_test(data,
                                         [cluster_dfs[combination[0]][variable].values,
                                          cluster_dfs[combination[1]][variable].values],
-                                        variable)
+                                        variable,
+                                        type=var_type)
             between_cluster_results[combination[0]][combination[1]].append({"variable": variable, "p-Value": bet_p})
             between_cluster_results[combination[1]][combination[0]].append({"variable": variable, "p-Value": bet_p})
 
